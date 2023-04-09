@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 18:46:07 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/09 22:30:52 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ typedef struct s_env {
     struct s_env *next;
 	struct s_env *prev;
 } t_env;
+
+typedef struct s_cmds {
+	char			*cmd;
+	char			**args;
+	int				std_in;
+	int				std_out;
+} t_cmds;
 
 enum tokens {
 	WORD,

@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 21:53:43 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/09 22:31:15 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,6 @@ int main(int argc, char *argv[], char *env[])
 	token = NULL;
 	envp = NULL;
 	ft_fill_envp(&envp, env);
-	while (envp)
-	{
-		printf("%s\n", envp->env_name);
-		envp = envp->next;
-	}
 	while ((input = readline("\e[0;32m$> minishell \e[0m")) != NULL)
 	{
 		add_history(input);
