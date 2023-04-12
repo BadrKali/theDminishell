@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 21:32:44 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/12 22:32:13 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_tokens	*ft_lstnew_token(char *value, int type);
 void		ft_remove_node(t_tokens **token);
 t_env		*ft_lstnew_envp(char *value, char *name);
 void	    ft_lstadd_back_token(t_tokens **lst, t_tokens *new);
+t_tokens	*ft_lstlast_token(t_tokens *lst);
 void		ft_lstadd_back_envp(t_env **lst, t_env *new);
 
 /* COUNT TOKENS FUNCTIONS */

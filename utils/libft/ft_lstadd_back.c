@@ -6,13 +6,13 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 19:13:51 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/11 18:08:19 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/12 22:32:04 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static t_tokens	*ft_lstlast_token(t_tokens *lst)
+t_tokens	*ft_lstlast_token(t_tokens *lst)
 {
 	if (lst == NULL)
 		return (NULL);
