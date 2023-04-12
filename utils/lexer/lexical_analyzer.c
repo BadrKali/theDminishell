@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:12:09 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 17:13:15 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/10 01:19:39 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,10 @@ void    ft_tokenizer(char **tokens, t_tokens **token)
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i][0] == '\'')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], S_QUOTES));
+		if (tokens[i][0] == '\'')		
+			ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tokens[i], 1, ft_strlen(tokens[i]) - 2), S_QUOTES));
 		else if (tokens[i][0] == '\"')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], QUOTES));
+			ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tokens[i], 1, ft_strlen(tokens[i]) - 2), QUOTES));
 		else if (tokens[i][0] == ' ')
 			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], SPACE));
 		else if (tokens[i][0] && tokens[i][1]

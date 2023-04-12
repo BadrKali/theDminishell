@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:14:31 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 17:14:42 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/12 02:23:46 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@ char	*ft_handle_quotes(char	*input, int *i, char quote)
 {
 	int		start;
 
-	start = ++(*i);
+	start = *i;
+	(*i)++;
 	while (input[*i] && input[*i] != quote)
 		(*i)++;
 	while (input[*i] && input[*i] != quote)
 		(*i)++;
 	if (input[*i] && input[*i] == quote)
-		return (ft_substr(input, start, (*i)++ - start));
+		return (ft_substr(input, start, ++(*i) - start));
 	return (ft_putstr_fd("You must close quotes...\n", 2), NULL);
 }
 
@@ -65,11 +66,11 @@ char	*ft_handle_variable(char *input, int *i)
 
 	start = *i;
 	(*i)++;
+	if (input[*i] == ' ')
+		return (ft_substr(input, start, (*i) - start));
 	if (input[*i] && (input[*i] != '_' && !ft_isalpha(input[*i])))
 		return (ft_substr(input, start, ++(*i) - start));
-	while (input[*i] && input[*i] != ' ' && input[*i] != '<'
-		&& input[*i] != '>' && input[*i] != '$' && input[*i] != '\''
-		&& input[*i] != '\"' && input[*i] != '|')
+	while (input[*i] && ft_isalpha(input[*i]))
 		(*i)++;
 	return (ft_substr(input, start, (*i) - start));
 }

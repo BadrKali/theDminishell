@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 19:13:51 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 19:46:27 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/11 18:08:19 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ void	ft_lstadd_back_token(t_tokens **lst, t_tokens *new)
 		*lst = new;
 	else
 	{
+		new->prev = ft_lstlast_token(*lst);
 		ft_lstlast_token(*lst)->next = new;
-		new->prev = *lst;
 	}
 }
 
@@ -47,7 +47,7 @@ void	ft_lstadd_back_envp(t_env **lst, t_env *new)
 		*lst = new;
 	else
 	{
+		new->prev = ft_lstlast_envp(*lst);
 		ft_lstlast_envp(*lst)->next = new;
-		new->prev = *lst;
 	}
 }

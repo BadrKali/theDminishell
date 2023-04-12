@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:13:34 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 16:40:33 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/12 02:35:21 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	ft_get_var_len(char *input, int *i, int *count)
 {
 	(*count)++;
 	(*i)++;
+	if (input[*i] == ' ')
+		return ;
 	if (input[*i] && (input[*i] != '_' || !ft_isalpha(input[*i])))
 		(*i)++;
 	while (input[*i] && input[*i] != ' ' && input[*i] != '<'

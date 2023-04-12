@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/09 22:30:52 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/12 21:32:44 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@ typedef struct s_tokens {
     struct s_tokens *next;
 	struct s_tokens *prev;
 } t_tokens;
+
+typedef struct s_utils {
+    int				i;
+    int				j;
+    int				k;
+    int				start;
+} t_utils;
 
 typedef struct s_env {
     char            *env_name;
@@ -64,8 +71,12 @@ char	    *ft_substr(char *s, unsigned int start, size_t len);
 void	    ft_putstr_fd(char *s, int fd);
 size_t	    ft_strlen(char *s);
 char		*ft_strdup(char *s1);
+char		*ft_strjoin(char *s1, char *s2);
 int         ft_isalpha(int c);
+int			ft_isdigit(int c);
+int			ft_strcmp(char *s1, char *s2);
 t_tokens	*ft_lstnew_token(char *value, int type);
+void		ft_remove_node(t_tokens **token);
 t_env		*ft_lstnew_envp(char *value, char *name);
 void	    ft_lstadd_back_token(t_tokens **lst, t_tokens *new);
 void		ft_lstadd_back_envp(t_env **lst, t_env *new);
@@ -90,5 +101,16 @@ void	ft_split_input(char *input, t_tokens **token);
 /* PARSING FUNCTIONS */
 
 int    ft_check_syntax(t_tokens *token);
+
+
+/* EXPANDER FUNCTIONS */
+
+void	ft_expand_vars(t_tokens **token, t_env *envp);
+t_env	*ft_get_var(t_env *envp, char *value);
+char	*ft_remove_name(char *env_name);
+char	**ft_check_for_var(t_tokens *token);
+int		ft_is_only_space(char *value);
+void	ft_initialize_vars(t_utils *utils);
+int		ft_find_var_position(char *value, char *var);
 
 #endif
