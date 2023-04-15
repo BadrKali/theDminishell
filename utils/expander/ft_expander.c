@@ -53,7 +53,7 @@ char	*ft_remove_false_vars(char *value, char *var)
 	return (ft_strjoin(first_half, second_half));
 }
 
-void    ft_handle_vars_quotes(t_tokens **token, t_env *envp)
+void    ft_handle_vars_quotes(t_tokens **token, t_env *envp, t_tokens **head)
 {
 	t_env	*tmp;
 	char	**var;
@@ -71,22 +71,20 @@ void    ft_handle_vars_quotes(t_tokens **token, t_env *envp)
 		i++;
 	}
 	if (ft_is_only_space((*token)->value))
-		ft_remove_node(token);
-	if ((*token) && (*token)->type == SPACE
-		&& ((*token)->prev == NULL
-		|| ((*token)->next && (*token)->next->type == SPACE)
-		|| ((*token)->prev && (*token)->prev->type == SPACE)
-		|| (*token)->next == NULL))
-		ft_remove_node(token);
+		ft_deleteNode(head, *token);
+	// if ((*token) && (*token)->type == T_SPACE
+	// 	&& ((*token)->prev == NULL
+	// 	|| ((*token)->next && (*token)->next->type == T_SPACE)
+	// 	|| ((*token)->prev && (*token)->prev->type == T_SPACE)
+	// 	|| (*token)->next == NULL))
+	// 	ft_deleteNode(head, *token);
 } 
 
 
-void	ft_handle_vars(t_tokens **token, t_env *envp)
+void	ft_handle_vars(t_tokens **token, t_env *envp, t_tokens **head)
 {
 	t_env	*tmp;
-	int		i;
 
-	i = 0;
 	if (ft_strlen((*token)->value) == 1)
 	{
 		if ((*token)->next != NULL)
@@ -98,28 +96,44 @@ void	ft_handle_vars(t_tokens **token, t_env *envp)
 		(*token)->value = ft_remove_name(tmp->env_name);
 	else
 	{
-		ft_remove_node(token);
-		if ((*token) && (*token)->type == SPACE
-			&& ((*token)->prev == NULL
-			|| ((*token)->next && (*token)->next->type == SPACE)
-			|| ((*token)->prev && (*token)->prev->type == SPACE)
-			|| (*token)->next == NULL))
-			ft_remove_node(token);
+		ft_deleteNode(head, *token);
+		// if ((*token) && (*token)->type == T_SPACE
+		// 	&& ((*token)->prev == NULL
+		// 	|| ((*token)->next && (*token)->next->type == T_SPACE)
+		// 	|| ((*token)->prev && (*token)->prev->type == T_SPACE)
+		// 	|| (*token)->next == NULL))
+		// 	ft_deleteNode(head, *token);
 	}
+}
+
+void	ft_delete_two_exec_spaces(t_tokens **head, t_tokens *token)
+{
+	if (token && token->type == T_SPACE
+	&& (token->prev == NULL
+	|| (token->next && token->next->type == T_SPACE)
+	|| (token->prev && token->prev->type == T_SPACE)
+	|| token->next == NULL))
+	ft_deleteNode(head, token);
+	token = token->next;
 }
 
 void	ft_expand_vars(t_tokens **token, t_env *envp)
 {
-	while (*token)
+	t_tokens	*tmp;
+
+	tmp = *token;
+	while (tmp)
 	{
-		if ((*token)->type == VAR)
-			ft_handle_vars(token, envp);
-		else if ((*token)->type == QUOTES)
-			ft_handle_vars_quotes(token, envp);
-		if (!(*token) || (*token)->next == NULL)
-			break ;
-		*token = (*token)->next;
+		if (tmp->type == VAR)
+			ft_handle_vars(&tmp, envp, token);
+		else if (tmp->type == QUOTES)
+			ft_handle_vars_quotes(&tmp, envp, token);
+		tmp = tmp->next;
 	}
-	while ((*token) && (*token)->prev != NULL)
-		(*token) = (*token)->prev;
+	tmp = *token;
+	while (tmp)
+	{
+		ft_delete_two_exec_spaces(token, tmp);
+		tmp = tmp->next;
+	}
 }

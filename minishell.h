@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 22:32:13 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/15 17:20:04 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -49,11 +50,13 @@ typedef struct s_cmds {
 	char			**args;
 	int				std_in;
 	int				std_out;
+    struct s_cmds	*next;
+	struct s_cmds	*prev;
 } t_cmds;
 
 enum tokens {
 	WORD,
-	SPACE,
+	T_SPACE,
 	ARG,
 	OR_OPERATOR,
 	IR_OPERATOR,
@@ -76,11 +79,14 @@ int         ft_isalpha(int c);
 int			ft_isdigit(int c);
 int			ft_strcmp(char *s1, char *s2);
 t_tokens	*ft_lstnew_token(char *value, int type);
-void		ft_remove_node(t_tokens **token);
+t_cmds		*ft_lstnew_cmd(char *command, char **args, int *stds);
+void 		ft_deleteNode(t_tokens **head_ref, t_tokens *del);
 t_env		*ft_lstnew_envp(char *value, char *name);
 void	    ft_lstadd_back_token(t_tokens **lst, t_tokens *new);
 t_tokens	*ft_lstlast_token(t_tokens *lst);
 void		ft_lstadd_back_envp(t_env **lst, t_env *new);
+void		ft_lstadd_back_cmd(t_cmds **lst, t_cmds *new);
+char		*ft_itoa(int n);
 
 /* COUNT TOKENS FUNCTIONS */
 
@@ -101,8 +107,8 @@ void	ft_split_input(char *input, t_tokens **token);
 
 /* PARSING FUNCTIONS */
 
-int    ft_check_syntax(t_tokens *token);
-
+int		ft_check_syntax(t_tokens *token);
+void	ft_cmd_table(t_tokens *token, t_cmds **cmds);
 
 /* EXPANDER FUNCTIONS */
 

@@ -63,7 +63,7 @@ void    ft_tokenizer(char **tokens, t_tokens **token)
 		else if (tokens[i][0] == '\"')
 			ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tokens[i], 1, ft_strlen(tokens[i]) - 2), QUOTES));
 		else if (tokens[i][0] == ' ')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], SPACE));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], T_SPACE));
 		else if (tokens[i][0] && tokens[i][1]
 			&& (tokens[i][0] == '<' || tokens[i][1] == '<'))
 			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], HEREDOC_OPERATOR));

@@ -23,7 +23,7 @@
 // 	{
 // 		if (token->next && token->next->next && (token->type == HEREDOC_OPERATOR
 // 		|| token->type == APPEND_OPERATOR || token->type == IR_OPERATOR
-// 		|| token->type == OR_OPERATOR) && (token->next->type == SPACE
+// 		|| token->type == OR_OPERATOR) && (token->next->type == T_SPACE
 // 		&& token->next->next->type == PIPE))
 // 			return (ft_putstr_fd(Err_PIPE "\n", 2), 1);
 // 		token = token->next;
@@ -33,7 +33,7 @@
 
 int	ft_check_before_pipe(t_tokens *token)
 {
-	if (token->next && token->next->type == SPACE)
+	if (token->next && token->next->type == T_SPACE)
 	{
 		if (token->next->next && token->next->next->type == PIPE)
 			return (ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2), 1);
@@ -45,9 +45,9 @@ int	ft_check_before_pipe(t_tokens *token)
 
 int	ft_check_after_pipe(t_tokens *token)
 {
-	if (!token->next || (token->next->type == SPACE && !token->next->next))
+	if (!token->next || (token->next->type == T_SPACE && !token->next->next))
 		return (ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2), 1);
-	if (token->next && token->next->type == SPACE)
+	if (token->next && token->next->type == T_SPACE)
 	{
 		if (token->next->next && (token->next->next->type == OR_OPERATOR
 			|| token->next->next->type == IR_OPERATOR

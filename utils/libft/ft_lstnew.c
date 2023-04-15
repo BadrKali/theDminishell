@@ -6,28 +6,24 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 18:02:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 21:16:13 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/15 18:08:09 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	ft_remove_node(t_tokens **token)
+void ft_deleteNode(t_tokens **head_ref, t_tokens *del)
 {
-	t_tokens	*tmp2;
-
-	tmp2 = NULL;
-	if ((*token)->next)
-		tmp2 = (*token)->next;
-	else if ((*token)->prev)
-		tmp2 = (*token)->prev;
-	if ((*token)->prev != NULL)
-		(*token)->prev->next = (*token)->next;
-	if ((*token)->next != NULL)
-		(*token)->next->prev = (*token)->prev;
-	free((*token)->value);
-	free(*token);
-	*token = tmp2;
+    if (*head_ref == NULL || del == NULL)
+        return;
+    if (*head_ref == del)
+        *head_ref = del->next;
+    if (del->next != NULL)
+        del->next->prev = del->prev;
+    if (del->prev != NULL)
+        del->prev->next = del->next;
+    free(del);
+    return;
 }
 
 t_tokens	*ft_lstnew_token(char *value, int type)
@@ -56,4 +52,20 @@ t_env	*ft_lstnew_envp(char *value, char *name)
 	envp->next = NULL;
 	envp->prev = NULL;
 	return (envp);
+}
+
+t_cmds	*ft_lstnew_cmd(char *command, char **args, int *stds)
+{
+	t_cmds	*cmd;
+
+	cmd = (t_cmds *)malloc(sizeof(t_cmds));
+	if (!cmd)
+		return (NULL);
+	cmd->cmd = command;
+	cmd->args = args;
+	cmd->std_in = stds[0];
+	cmd->std_out = stds[1];
+	cmd->next = NULL;
+	cmd->prev = NULL;
+	return (cmd);
 }

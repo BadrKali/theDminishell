@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 22:52:25 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/15 18:07:12 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,13 @@ int main(int argc, char *argv[], char *env[])
 {
 	t_tokens	*token;
 	t_env		*envp;
+	t_cmds		*cmd;
 	char		*input;
 
 	(void)argc, (void)argv;
 	token = NULL;
 	envp = NULL;
+	cmd = NULL;
 	ft_fill_envp(&envp, env);
 	while ((input = readline("\e[0;32m$> minishell \e[0m")) != NULL)
 	{
@@ -65,13 +67,27 @@ int main(int argc, char *argv[], char *env[])
 		if (!ft_check_syntax(token))
 		{
 			ft_expand_vars(&token, envp);
-			while (token)
-			{
-				printf("value: [%s]\n", token->value);
-				printf("type: [%d]\n", token->type);
-				printf("--------------------------\n");
-				token = token->next;
-			}
+			ft_cmd_table(token, &cmd);
+			// while (cmd)
+			// {
+			// 	printf("cmd: [%s]\n", cmd->cmd);
+			// 	int	i = 0;
+			// 	while (cmd->args[i])
+			// 	{
+			// 		printf("args[%d]: [%s]\n", i, cmd->args[i]);
+			// 		i++;
+			// 	}
+			// 	printf("std_in: %d\n", cmd->std_in);
+			// 	printf("std_out: %d\n", cmd->std_out);
+			// 	cmd = cmd->next;
+			// }
+			// while (token)
+			// {
+			// 	printf("value: [%s]\n", token->value);
+			// 	printf("type: [%d]\n", token->type);
+			// 	printf("--------------------------\n");
+			// 	token = token->next;
+			// }
 		}
 		token = NULL;
 	}

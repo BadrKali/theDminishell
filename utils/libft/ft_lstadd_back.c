@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 19:13:51 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 22:32:04 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/15 17:14:03 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,25 @@ void	ft_lstadd_back_envp(t_env **lst, t_env *new)
 	{
 		new->prev = ft_lstlast_envp(*lst);
 		ft_lstlast_envp(*lst)->next = new;
+	}
+}
+
+static t_cmds	*ft_lstlast_cmd(t_cmds *lst)
+{
+	if (lst == NULL)
+		return (NULL);
+	while (lst->next != NULL)
+		lst = lst->next;
+	return (lst);
+}
+
+void	ft_lstadd_back_cmd(t_cmds **lst, t_cmds *new)
+{
+	if (*lst == NULL)
+		*lst = new;
+	else
+	{
+		new->prev = ft_lstlast_cmd(*lst);
+		ft_lstlast_cmd(*lst)->next = new;
 	}
 }
