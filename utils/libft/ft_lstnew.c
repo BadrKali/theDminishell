@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 18:02:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/15 18:08:09 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:35:31 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void ft_deleteNode(t_tokens **head_ref, t_tokens *del)
         del->next->prev = del->prev;
     if (del->prev != NULL)
         del->prev->next = del->next;
+    free(del->value);
     free(del);
     return;
 }

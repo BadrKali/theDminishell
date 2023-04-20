@@ -16,7 +16,8 @@ char	*ft_get_cmd(t_tokens *token)
 {
 	while (token && token->type != PIPE)
 	{
-		if (token->type == WORD)
+		if (token->type == WORD || token->type == QUOTES
+			|| token->type == S_QUOTES)
 			return (token->value);
 		token = token->next;
 	}
@@ -28,7 +29,15 @@ void	ft_skip_redirection(t_tokens **token)
 	*token = (*token)->next;
 	if (*token && (*token)->type == T_SPACE)
 		*token = (*token)->next;
-	if (*token && (*token)->type == ARG)
+	if (*token)
+		*token = (*token)->next;
+}
+
+void	skip_command(t_tokens **token, char *cmd)
+{
+	while (*token && !ft_strcmp((*token)->value, cmd))
+		*token = (*token)->next;
+	if (*token && ft_strcmp((*token)->value, cmd))
 		*token = (*token)->next;
 }
 
@@ -44,23 +53,26 @@ int	ft_get_args_len(t_tokens *token)
 			ft_skip_redirection(&token);
 		if (token && token->type == T_SPACE)
 			token = token->next;
-		if (token && token->type == ARG)
+		if (token && (token->type == ARG || token->type == QUOTES
+			|| token->type == S_QUOTES))
 		{
 			token = token->next;
 			count++;
 		}
-		else if (token)
+		else if (token && token->type != PIPE)
 			token = token->next;
 	}
 	return (count);
 }
 
-char	**ft_get_args(t_tokens *token)
+char	**ft_get_args(t_tokens *token, char *cmd)
 {
 	char	**args;
 	int		i;
 
 	i = 0;
+	if (cmd)
+		skip_command(&token, cmd);
 	args = malloc((ft_get_args_len(token) + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
@@ -71,7 +83,8 @@ char	**ft_get_args(t_tokens *token)
 			ft_skip_redirection(&token);
 		if (token && token->type == T_SPACE)
 			token = token->next;
-		if (token && token->type == ARG)
+		if (token && (token->type == ARG || token->type == QUOTES
+			|| token->type == S_QUOTES))
 		{
 			args[i++] = token->value;
 			token = token->next;
@@ -97,6 +110,7 @@ void	ft_change_red_value(t_tokens **token)
 {
 	free((*token)->value);
 	(*token)->value = ft_strdup("<");
+	(*token)->type = IR_OPERATOR;
 	*token = (*token)->next;
 }
 
@@ -140,33 +154,87 @@ void	ft_handle_heredoc(t_tokens **tokens, int file_index)
 	ft_change_token_value(tokens, file_name);
 }
 
-// int	ft_handle_input_red(t_tokens **token, int std_in)
-// {
-// 	int	fd;
+int	is_there_same_type_next(t_tokens *token, int type)
+{
+	int	is_found;
 
-// 	*token = (*token)->next;
-// 	if (*token && (*token)->type == T_SPACE)
-// 		(*token) = (*token)->next;
-// 	if (!(*token))
-// 		return ;
-// 	fd = open((*token)->value, O_RDONLY, 0777);
-// 	if (fd == -1)
-// 		return ;
-// 	return (fd);	
-// }
+	is_found = 0;
+	while (token && token->type != PIPE)
+	{
+		if ((type == 1 && (token->type == OR_OPERATOR
+			|| token->type == APPEND_OPERATOR))
+			|| (type == 2 && token->type == IR_OPERATOR))
+			is_found = 1;
+		token = token->next;
+	}
+	return (is_found);
+}
+
+int	ft_handle_input_red(t_tokens **token)
+{
+	int	fd;
+
+	*token = (*token)->next;
+	if (*token && (*token)->type == T_SPACE)
+		(*token) = (*token)->next;
+	if (!(*token))
+		return (0);
+	fd = open((*token)->value, O_RDONLY | O_TRUNC, 0777);
+	if (fd == -1)
+		return (-1);
+	if (is_there_same_type_next(*token, 2))
+		close(fd);
+	return (fd);	
+}
+
+int	handle_output_redirection(t_tokens **token)
+{
+	int	fd;
+
+	*token = (*token)->next;
+	if (*token && (*token)->type == T_SPACE)
+		(*token) = (*token)->next;
+	if (!(*token))
+		return (1);
+	fd = open((*token)->value, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (fd == -1)
+		return (1);
+	if (is_there_same_type_next(*token, 1))
+		close(fd);
+	return (fd);
+}
+
+int	handle_append_operator(t_tokens **token)
+{
+	int	fd;
+
+	*token = (*token)->next;
+	if (*token && (*token)->type == T_SPACE)
+		(*token) = (*token)->next;
+	if (!(*token))
+		return (1);
+	fd = open((*token)->value, O_CREAT | O_RDWR | O_APPEND, 0777);
+	if (fd == -1)
+		return (1);
+	if (is_there_same_type_next(*token, 1))
+		close(fd);
+	return (fd);
+}
 
 int	*ft_handle_redirections(t_tokens **token)
 {
 	t_tokens	*tmp;
 	int			*stds;
 	static int	file_index;
+	int			is_error;
 
 	tmp = *token;
+	is_error = 0;
 	stds = malloc(2 * sizeof(int *));
 	if (!stds)
 		return (NULL);
-	stds[1] = 1;
 	stds[0] = 0;
+	stds[1] = 1;
 	while (tmp && tmp->type != PIPE)
 	{
 		if (tmp->type == HEREDOC_OPERATOR)
@@ -176,13 +244,16 @@ int	*ft_handle_redirections(t_tokens **token)
 	}
 	while (*token && (*token)->type != PIPE)
 	{
-		// if ((*token)->type == IR_OPERATOR)
-		// 	stds[0] = ft_handle_input_red(token);
-		// else if ((*token)->type == IR_OPERATOR)
-		// 	ft_handle_output_red();
-		// else if ((*token)->type == APPEND_OPERATOR)
-		// 	ft_handle_append_op();
-		*token = (*token)->next;
+		if ((*token)->type == IR_OPERATOR && !is_error)
+			stds[0] = ft_handle_input_red(token);
+		else if ((*token)->type == OR_OPERATOR && !is_error)
+			stds[1] = handle_output_redirection(token);
+		else if ((*token)->type == APPEND_OPERATOR && !is_error)
+			stds[1] = handle_append_operator(token);
+		if (stds[0] == -1)
+			is_error = 1;
+		if (*token)
+			*token = (*token)->next;
 	}
 	return (stds);
 }
@@ -204,7 +275,7 @@ void	ft_cmd_table(t_tokens *token, t_cmds **cmds)
 	while (token)
 	{
 		cmd = ft_get_cmd(token);
-		args = ft_get_args(token);
+		args = ft_get_args(token, cmd);
 		stds = ft_handle_redirections(&token);
 		ft_lstadd_back_cmd(cmds, ft_lstnew_cmd(cmd, args, stds));
 		ft_get_to_end(&token);

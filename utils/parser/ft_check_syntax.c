@@ -6,30 +6,11 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 03:34:50 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 22:34:06 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/19 18:47:39 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// int    ft_check_syntax(t_tokens *token)
-// {
-// 	if (token && (token->type == PIPE || (token->next
-// 		&& token->next->type == PIPE && (token->type == HEREDOC_OPERATOR
-// 		|| token->type == APPEND_OPERATOR || token->type == IR_OPERATOR
-// 		|| token->type == OR_OPERATOR))))
-// 		return (ft_putstr_fd(Err_PIPE "\n", 2), 1);
-// 	while (token)
-// 	{
-// 		if (token->next && token->next->next && (token->type == HEREDOC_OPERATOR
-// 		|| token->type == APPEND_OPERATOR || token->type == IR_OPERATOR
-// 		|| token->type == OR_OPERATOR) && (token->next->type == T_SPACE
-// 		&& token->next->next->type == PIPE))
-// 			return (ft_putstr_fd(Err_PIPE "\n", 2), 1);
-// 		token = token->next;
-// 	}
-// 	return (0);
-// }
 
 int	ft_check_before_pipe(t_tokens *token)
 {
@@ -84,9 +65,9 @@ int    ft_check_syntax(t_tokens *token)
 		|| token->type == HEREDOC_OPERATOR || token->type == APPEND_OPERATOR)
 			if (ft_check_before_pipe(token))
 				return (1);
-		if (token->type == PIPE)
-			if (ft_check_after_pipe(token))
-				return (1);
+		// if (token->type == PIPE)
+		// 	if (ft_check_after_pipe(token))
+		// 		return (1);
 		token = token->next;
 	}
 	return (0);

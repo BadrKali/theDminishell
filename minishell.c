@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/15 18:07:12 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:37:08 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,19 @@ int main(int argc, char *argv[], char *env[])
 		{
 			ft_expand_vars(&token, envp);
 			ft_cmd_table(token, &cmd);
-			// while (cmd)
-			// {
-			// 	printf("cmd: [%s]\n", cmd->cmd);
-			// 	int	i = 0;
-			// 	while (cmd->args[i])
-			// 	{
-			// 		printf("args[%d]: [%s]\n", i, cmd->args[i]);
-			// 		i++;
-			// 	}
-			// 	printf("std_in: %d\n", cmd->std_in);
-			// 	printf("std_out: %d\n", cmd->std_out);
-			// 	cmd = cmd->next;
-			// }
+			while (cmd)
+			{
+				printf("cmd: [%s]\n", cmd->cmd);
+				int	i = 0;
+				while (cmd->args[i])
+				{
+					printf("args[%d]: [%s]\n", i, cmd->args[i]);
+					i++;
+				}
+				printf("std_in: %d\n", cmd->std_in);
+				printf("std_out: %d\n", cmd->std_out);
+				cmd = cmd->next;
+			}
 			// while (token)
 			// {
 			// 	printf("value: [%s]\n", token->value);
