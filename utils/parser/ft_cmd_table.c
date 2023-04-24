@@ -41,11 +41,13 @@ void	skip_command(t_tokens **token, char *cmd)
 		*token = (*token)->next;
 }
 
-int	ft_get_args_len(t_tokens *token)
+int	ft_get_args_len(t_tokens *token, char *cmd)
 {
 	int	count;
 
 	count = 0;
+	if (cmd)
+		count++;
 	while (token && token->type != PIPE)
 	{
 		if (token->type == OR_OPERATOR || token->type == IR_OPERATOR
@@ -65,6 +67,45 @@ int	ft_get_args_len(t_tokens *token)
 	return (count);
 }
 
+int	is_there_forwardslash(char *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*get_path(char *cmd)
+{
+	char	*PATH;
+	char	**tab;
+	int		i;
+	int		is_forwardslash;
+
+	i = 0;
+	PATH = getenv("PATH");
+	tab = ft_split(PATH, ':');
+	is_forwardslash = is_there_forwardslash(cmd);
+	while (tab[i] && !is_forwardslash)
+	{
+		tab[i] = ft_strjoin(tab[i], "/");
+		tab[i] = ft_strjoin(tab[i], cmd);
+		if (access(tab[i], F_OK) == 0 && access(tab[i], X_OK) == 0)
+			return (tab[i]);
+		i++;
+	}
+	// if (is_forwardslash && access(cmd, F_OK) == 0
+	// 	&& access(cmd, X_OK) == 0)
+	// 		return (cmd);
+	return (cmd);
+}
+
 char	**ft_get_args(t_tokens *token, char *cmd)
 {
 	char	**args;
@@ -73,9 +114,11 @@ char	**ft_get_args(t_tokens *token, char *cmd)
 	i = 0;
 	if (cmd)
 		skip_command(&token, cmd);
-	args = malloc((ft_get_args_len(token) + 1) * sizeof(char *));
+	args = malloc((ft_get_args_len(token, cmd) + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
+	if (cmd)
+		args[i++] = get_path(cmd);
 	while (token && token->type != PIPE)
 	{
 		if (token->type == OR_OPERATOR || token->type == IR_OPERATOR
@@ -139,7 +182,7 @@ void	ft_handle_heredoc(t_tokens **tokens, int file_index)
 
 	file_name = ft_strjoin(ft_strdup("/tmp/tmp"), ft_itoa(file_index));
 	file_name = ft_strjoin(file_name, ft_strdup(".txt"));
-	fd = open(file_name, O_RDWR | O_CREAT, 0777);
+	fd = open(file_name, O_RDWR | O_CREAT | O_TRUNC, 0777);
 	if (fd == -1)
 		return ;
 	delimiter = ft_get_delimiter(*tokens);
@@ -179,7 +222,7 @@ int	ft_handle_input_red(t_tokens **token)
 		(*token) = (*token)->next;
 	if (!(*token))
 		return (0);
-	fd = open((*token)->value, O_RDONLY | O_TRUNC, 0777);
+	fd = open((*token)->value, O_RDONLY, 0777);
 	if (fd == -1)
 		return (-1);
 	if (is_there_same_type_next(*token, 2))

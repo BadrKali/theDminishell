@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/17 16:37:08 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/24 09:58:34 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,50 @@ void	ft_fill_envp(t_env **envp, char *env[])
 	}
 }
 
+int	check_start(char *val)
+{
+	char	*str;
+	int		i;
+
+	i = 0;
+	str = ft_strdup("/tmp/");
+	while (i < 5)
+	{
+		if (str[i] != val[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	delete_tmp_files(t_tokens *token)
+{
+	while (token)
+	{
+		if (token->type == IR_OPERATOR)
+		{
+			token = token->next;
+			if (token && token->type == T_SPACE)
+				token = token->next;
+			if (!check_start(token->value))
+				unlink(token->value);
+		}
+		token = token->next;
+	}
+}
+
+void	close_open_fds(t_cmds *cmd)
+{
+	while (cmd)
+	{
+		if (cmd->std_in != 0 && cmd->std_in != -1)
+			close(cmd->std_in);
+		if (cmd->std_out != 1 && cmd->std_out != -1)
+			close(cmd->std_out);
+		cmd = cmd->next;
+	}
+}
+
 int main(int argc, char *argv[], char *env[])
 {
 	t_tokens	*token;
@@ -68,18 +112,19 @@ int main(int argc, char *argv[], char *env[])
 		{
 			ft_expand_vars(&token, envp);
 			ft_cmd_table(token, &cmd);
-			while (cmd)
+			t_cmds *tmp = cmd;
+			while (tmp)
 			{
-				printf("cmd: [%s]\n", cmd->cmd);
+				printf("cmd: [%s]\n", tmp->cmd);
 				int	i = 0;
-				while (cmd->args[i])
+				while (tmp->args[i])
 				{
-					printf("args[%d]: [%s]\n", i, cmd->args[i]);
+					printf("args[%d]: [%s]\n", i, tmp->args[i]);
 					i++;
 				}
-				printf("std_in: %d\n", cmd->std_in);
-				printf("std_out: %d\n", cmd->std_out);
-				cmd = cmd->next;
+				printf("std_in: %d\n", tmp->std_in);
+				printf("std_out: %d\n", tmp->std_out);
+				tmp = tmp->next;
 			}
 			// while (token)
 			// {
@@ -89,6 +134,9 @@ int main(int argc, char *argv[], char *env[])
 			// 	token = token->next;
 			// }
 		}
+		delete_tmp_files(token);
+		close_open_fds(cmd);
 		token = NULL;
+		cmd = NULL;
 	}
 }
