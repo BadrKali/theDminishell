@@ -17,7 +17,7 @@ char	*ft_get_cmd(t_tokens *token)
 	while (token && token->type != PIPE)
 	{
 		if (token->type == WORD || token->type == QUOTES
-			|| token->type == S_QUOTES)
+			|| token->type == S_QUOTES || token->type == VAR)
 			return (token->value);
 		token = token->next;
 	}
@@ -56,7 +56,7 @@ int	ft_get_args_len(t_tokens *token, char *cmd)
 		if (token && token->type == T_SPACE)
 			token = token->next;
 		if (token && (token->type == ARG || token->type == QUOTES
-			|| token->type == S_QUOTES))
+			|| token->type == S_QUOTES || token->type == VAR))
 		{
 			token = token->next;
 			count++;
@@ -127,7 +127,7 @@ char	**ft_get_args(t_tokens *token, char *cmd)
 		if (token && token->type == T_SPACE)
 			token = token->next;
 		if (token && (token->type == ARG || token->type == QUOTES
-			|| token->type == S_QUOTES))
+			|| token->type == S_QUOTES || token->type == VAR))
 		{
 			args[i++] = token->value;
 			token = token->next;
