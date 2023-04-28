@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/20 17:00:57 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/26 19:29:51 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void		ft_lstadd_back_envp(t_env **lst, t_env *new);
 void		ft_lstadd_back_cmd(t_cmds **lst, t_cmds *new);
 char		*ft_itoa(int n);
 char		**ft_split(char *s, char c);
+void		*free_memory(char **res);
 
 /* COUNT TOKENS FUNCTIONS */
 

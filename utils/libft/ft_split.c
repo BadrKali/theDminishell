@@ -41,7 +41,7 @@ static char	*split_array(char *s, int start, int end)
 	return (ptr);
 }
 
-static	void	*free_memory(char **res)
+void	*free_memory(char **res)
 {
 	int	j;
 

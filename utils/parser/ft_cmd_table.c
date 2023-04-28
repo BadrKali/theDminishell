@@ -94,16 +94,13 @@ char	*get_path(char *cmd)
 	is_forwardslash = is_there_forwardslash(cmd);
 	while (tab[i] && !is_forwardslash)
 	{
-		tab[i] = ft_strjoin(tab[i], "/");
-		tab[i] = ft_strjoin(tab[i], cmd);
-		if (access(tab[i], F_OK) == 0 && access(tab[i], X_OK) == 0)
-			return (tab[i]);
+		PATH = ft_strjoin(tab[i], "/");
+		PATH = ft_strjoin(PATH, cmd);
+		if (access(PATH, F_OK) == 0 && access(PATH, X_OK) == 0)
+			return (free_memory(tab), PATH);
 		i++;
 	}
-	// if (is_forwardslash && access(cmd, F_OK) == 0
-	// 	&& access(cmd, X_OK) == 0)
-	// 		return (cmd);
-	return (cmd);
+	return (free_memory(tab), free(PATH), cmd);
 }
 
 char	**ft_get_args(t_tokens *token, char *cmd)
@@ -319,6 +316,8 @@ void	ft_cmd_table(t_tokens *token, t_cmds **cmds)
 	{
 		cmd = ft_get_cmd(token);
 		args = ft_get_args(token, cmd);
+		if (access(args[0], F_OK) != 0 && access(args[0], X_OK) != 0)
+			cmd = NULL;
 		stds = ft_handle_redirections(&token);
 		ft_lstadd_back_cmd(cmds, ft_lstnew_cmd(cmd, args, stds));
 		ft_get_to_end(&token);
