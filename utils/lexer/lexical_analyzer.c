@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:12:09 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/10 01:19:39 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/28 15:31:26 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,51 @@ int	ft_check_token_pos(char **token, int i)
 	return (1);
 }
 
+void	word_token(t_tokens **token, char **tok, int *i)
+{
+	// int	tmp;
+
+	// tmp = *i;
+	// tmp++;
+	// while (tok[tmp] && tok[tmp][0] != ' ' && (tok[tmp][0] == '\'' || tok[tmp][0] == '\"'))
+	// 	tok[*i] = ft_strjoin(tok[*i], tok[tmp++]);
+	ft_lstadd_back_token(token, ft_lstnew_token(tok[*i], WORD));
+	(*i)++;
+}
+
+void	quotes_token(t_tokens **token, char *tok, int tok_name, int *i)
+{
+	ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tok, 1, ft_strlen(tok) - 2), tok_name));
+	(*i)++;
+}
+
+void	check_for_word_next(t_tokens **token)
+{
+	t_tokens	*tmp;
+	t_tokens	*tmp2;
+	t_tokens	*head;
+
+	head = *token;
+	tmp2 = *token;
+	while (tmp2)
+	{
+		if ((tmp2)->type == WORD)
+		{
+			tmp = tmp2;
+			tmp2 = (tmp2)->next;
+			while (tmp2 && (tmp2)->type != T_SPACE
+				&& ((tmp2)->type == QUOTES || (tmp2)->type == S_QUOTES))
+			{
+				tmp->value = ft_strjoin(tmp->value, (tmp2)->value);
+				ft_deleteNode(&head, tmp2);
+				tmp2 = (tmp2)->next;
+			}
+		}
+		else
+			tmp2 = (tmp2)->next;
+	}
+}
+
 void    ft_tokenizer(char **tokens, t_tokens **token)
 {
 	int i;
@@ -59,31 +104,31 @@ void    ft_tokenizer(char **tokens, t_tokens **token)
 	while (tokens[i])
 	{
 		if (tokens[i][0] == '\'')		
-			ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tokens[i], 1, ft_strlen(tokens[i]) - 2), S_QUOTES));
+			quotes_token(token, tokens[i], S_QUOTES, &i);
 		else if (tokens[i][0] == '\"')
-			ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tokens[i], 1, ft_strlen(tokens[i]) - 2), QUOTES));
+			quotes_token(token, tokens[i], QUOTES, &i);
 		else if (tokens[i][0] == ' ')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], T_SPACE));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], T_SPACE));
 		else if (tokens[i][0] && tokens[i][1]
 			&& (tokens[i][0] == '<' || tokens[i][1] == '<'))
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], HEREDOC_OPERATOR));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], HEREDOC_OPERATOR));
 		else if (tokens[i][0] && tokens[i][1]
 			&& (tokens[i][0] == '>' || tokens[i][1] == '>'))
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], APPEND_OPERATOR));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], APPEND_OPERATOR));
 		else if (tokens[i][0] == '>')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], OR_OPERATOR));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], OR_OPERATOR));
 		else if (tokens[i][0] == '<')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], IR_OPERATOR));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], IR_OPERATOR));
 		else if (tokens[i][0] == '|')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], PIPE));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], PIPE));
 		else if (tokens[i][0] == '$')
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], VAR));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], VAR));
 		else if (ft_check_token_pos(tokens, i))
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], ARG));
+			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], ARG));
 		else
-			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i], WORD));
-		i++;
+			word_token(token, tokens, &i);
 	}
+	check_for_word_next(token);
 }
 
 int	ft_check_is_end(char *input, int i)

@@ -97,10 +97,10 @@ char	*get_path(char *cmd)
 		PATH = ft_strjoin(tab[i], "/");
 		PATH = ft_strjoin(PATH, cmd);
 		if (access(PATH, F_OK) == 0 && access(PATH, X_OK) == 0)
-			return (free_memory(tab), PATH);
+			return (PATH);
 		i++;
 	}
-	return (free_memory(tab), free(PATH), cmd);
+	return (cmd);
 }
 
 char	**ft_get_args(t_tokens *token, char *cmd)
@@ -169,6 +169,11 @@ void	ft_change_token_value(t_tokens **token, char *file_name)
 	if (*token && (*token)->type == ARG)
 		ft_change_delimiter_value(token, file_name);
 }
+
+// void	handle_heredoc_vars()
+// {
+
+// }
 
 void	ft_handle_heredoc(t_tokens **tokens, int file_index)
 {
