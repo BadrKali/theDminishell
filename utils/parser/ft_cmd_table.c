@@ -170,7 +170,7 @@ void	ft_change_token_value(t_tokens **token, char *file_name)
 		ft_change_delimiter_value(token, file_name);
 }
 
-// void	handle_heredoc_vars()
+// void	handle_heredoc_vars(char *input)
 // {
 
 // }
@@ -321,7 +321,7 @@ void	ft_cmd_table(t_tokens *token, t_cmds **cmds)
 	{
 		cmd = ft_get_cmd(token);
 		args = ft_get_args(token, cmd);
-		if (access(args[0], F_OK) != 0 && access(args[0], X_OK) != 0)
+		if (!ft_strcmp(args[0], "export") && access(args[0], F_OK) != 0 && access(args[0], X_OK) != 0)
 			cmd = NULL;
 		stds = ft_handle_redirections(&token);
 		ft_lstadd_back_cmd(cmds, ft_lstnew_cmd(cmd, args, stds));
