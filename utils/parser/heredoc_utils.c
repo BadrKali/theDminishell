@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 16:24:43 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 16:37:32 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 18:52:46 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	ft_change_token_value(t_tokens **token, char *file_name)
 	ft_change_red_value(token);
 	if (*token && (*token)->type == T_SPACE)
 		*token = (*token)->next;
-	if (*token && (*token)->type == ARG)
+	if (*token && ((*token)->type == ARG || (*token)->type == VAR
+		|| (*token)->type == QUOTES || (*token)->type == S_QUOTES))
 		ft_change_delimiter_value(token, file_name);
 }

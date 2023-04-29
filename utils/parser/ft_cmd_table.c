@@ -177,6 +177,28 @@ int	is_there_same_type_next(t_tokens *token, int type)
 	return (is_found);
 }
 
+int	is_there_space(char *val)
+{
+	int	i;
+
+	i = 0;
+	while (val[i])
+	{
+		if (val[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	check_for_var(char *val, int type)
+{
+	if (type == VAR)
+		if (is_there_space(val))
+			return (1);
+	return (0);
+}
+
 int	ft_handle_input_red(t_tokens **token)
 {
 	int	fd;
@@ -186,6 +208,8 @@ int	ft_handle_input_red(t_tokens **token)
 		(*token) = (*token)->next;
 	if (!(*token))
 		return (0);
+	if (check_for_var((*token)->value, (*token)->type))
+		return (ft_putstr_fd("minishell: ambiguous redirect\n", 2), 0);
 	fd = open((*token)->value, O_RDONLY, 0777);
 	if (fd == -1)
 		return (-1);
@@ -203,6 +227,8 @@ int	handle_output_redirection(t_tokens **token)
 		(*token) = (*token)->next;
 	if (!(*token))
 		return (1);
+	if (check_for_var((*token)->value, (*token)->type))
+		return (ft_putstr_fd("minishell: ambiguous redirect\n", 2), 0);
 	fd = open((*token)->value, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd == -1)
 		return (1);
@@ -220,6 +246,8 @@ int	handle_append_operator(t_tokens **token)
 		(*token) = (*token)->next;
 	if (!(*token))
 		return (1);
+	if (check_for_var((*token)->value, (*token)->type))
+		return (ft_putstr_fd("minishell: ambiguous redirect\n", 2), 0);
 	fd = open((*token)->value, O_CREAT | O_RDWR | O_APPEND, 0777);
 	if (fd == -1)
 		return (1);

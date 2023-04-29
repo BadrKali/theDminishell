@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:47:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 16:44:44 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 18:39:47 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,15 @@ void    ft_handle_vars_quotes(t_tokens **token, t_env *envp, t_tokens **head)
 		ft_deleteNode(head, *token);
 } 
 
-
 void	ft_handle_vars(t_tokens **token, t_env *envp, t_tokens **head)
 {
 	t_env	*tmp;
 
+	if ((*token)->prev && (*token)->prev->type == T_SPACE)
+		if ((*token)->prev->prev && (*token)->prev->prev->type == HEREDOC_OPERATOR)
+			return ;
+	if ((*token)->prev && (*token)->prev->type == HEREDOC_OPERATOR)
+		return ;
 	if (ft_strlen((*token)->value) == 1 || (*token)->value[1] == '$')
 	{
 		if ((*token)->value[1] == '$')
