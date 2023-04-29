@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:47:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/28 18:29:09 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:44:44 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,6 @@ void    ft_handle_vars_quotes(t_tokens **token, t_env *envp, t_tokens **head)
 	}
 	if (ft_is_only_space((*token)->value))
 		ft_deleteNode(head, *token);
-	// if ((*token) && (*token)->type == T_SPACE
-	// 	&& ((*token)->prev == NULL
-	// 	|| ((*token)->next && (*token)->next->type == T_SPACE)
-	// 	|| ((*token)->prev && (*token)->prev->type == T_SPACE)
-	// 	|| (*token)->next == NULL))
-	// 	ft_deleteNode(head, *token);
 } 
 
 
@@ -97,15 +91,7 @@ void	ft_handle_vars(t_tokens **token, t_env *envp, t_tokens **head)
 	if (tmp)
 		(*token)->value = ft_remove_name(tmp->env_name);
 	else
-	{
 		ft_deleteNode(head, *token);
-		// if ((*token) && (*token)->type == T_SPACE
-		// 	&& ((*token)->prev == NULL
-		// 	|| ((*token)->next && (*token)->next->type == T_SPACE)
-		// 	|| ((*token)->prev && (*token)->prev->type == T_SPACE)
-		// 	|| (*token)->next == NULL))
-		// 	ft_deleteNode(head, *token);
-	}
 }
 
 void	ft_delete_two_exec_spaces(t_tokens **head, t_tokens *token)

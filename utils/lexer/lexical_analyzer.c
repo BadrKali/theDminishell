@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:12:09 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/28 18:20:14 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:46:47 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ void	check_for_word_next(t_tokens **token)
 			tmp = tmp2;
 			tmp2 = (tmp2)->next;
 			while (tmp2 && (tmp2)->type != T_SPACE
-				&& ((tmp2)->type == QUOTES || (tmp2)->type == S_QUOTES))
+				&& ((tmp2)->type == QUOTES || (tmp2)->type == S_QUOTES
+				|| tmp2->type == ARG || tmp2->type == VAR))
 			{
 				tmp->value = ft_strjoin(tmp->value, (tmp2)->value);
 				ft_deleteNode(&head, tmp2);
