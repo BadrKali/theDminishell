@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:47:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 21:28:30 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/28 18:29:09 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void    ft_handle_vars_quotes(t_tokens **token, t_env *envp, t_tokens **head)
 	int		i;
 
 	i = 0;
-	var = ft_check_for_var(*token);
+	var = ft_check_for_var((*token)->value);
 	while (var[i])
 	{
 		tmp = ft_get_var(envp, var[i]);
@@ -85,8 +85,10 @@ void	ft_handle_vars(t_tokens **token, t_env *envp, t_tokens **head)
 {
 	t_env	*tmp;
 
-	if (ft_strlen((*token)->value) == 1)
+	if (ft_strlen((*token)->value) == 1 || (*token)->value[1] == '$')
 	{
+		if ((*token)->value[1] == '$')
+			(*token)->value = ft_itoa(getpid());
 		if ((*token)->next != NULL)
 			*token = (*token)->next;
 		return ;

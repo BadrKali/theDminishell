@@ -124,7 +124,30 @@ char	**ft_get_args(t_tokens *token, char *cmd)
 		if (token && token->type == T_SPACE)
 			token = token->next;
 		if (token && (token->type == ARG || token->type == QUOTES
-			|| token->type == S_QUOTES || token->type == VAR))
+			|| token->type == S_QUOTES))
+		{
+			if (token->next && token->next->type != OR_OPERATOR && token->next->type != IR_OPERATOR
+			&& token->next->type != HEREDOC_OPERATOR && token->next->type != APPEND_OPERATOR
+			&& token->next->type != PIPE && token->next->type != T_SPACE)
+			{
+				args[i] = token->value;
+				token = token->next;
+				while (token && token->type != OR_OPERATOR && token->type != IR_OPERATOR
+					&& token->type != HEREDOC_OPERATOR && token->type != APPEND_OPERATOR
+					&& token->type != PIPE && token->type != T_SPACE)
+				{
+					args[i] = ft_strjoin(args[i], token->value);
+					token = token->next;
+				}
+				i++;
+			}
+			else
+			{
+				args[i++] = token->value;
+				token = token->next;
+			}
+		}
+		else if (token && token->type == VAR)
 		{
 			args[i++] = token->value;
 			token = token->next;
@@ -136,67 +159,6 @@ char	**ft_get_args(t_tokens *token, char *cmd)
 	}
 	args[i] = 0;
 	return (args);
-}
-
-char	*ft_get_delimiter(t_tokens *token)
-{
-	token = token->next;
-	if (token->type == T_SPACE)
-		token = token->next;
-	return (token->value);
-}
-
-void	ft_change_red_value(t_tokens **token)
-{
-	free((*token)->value);
-	(*token)->value = ft_strdup("<");
-	(*token)->type = IR_OPERATOR;
-	*token = (*token)->next;
-}
-
-void	ft_change_delimiter_value(t_tokens **token, char *file_name)
-{
-	free((*token)->value);
-	(*token)->value = file_name;
-	*token = (*token)->next;
-}
-
-void	ft_change_token_value(t_tokens **token, char *file_name)
-{
-	ft_change_red_value(token);
-	if (*token && (*token)->type == T_SPACE)
-		*token = (*token)->next;
-	if (*token && (*token)->type == ARG)
-		ft_change_delimiter_value(token, file_name);
-}
-
-// void	handle_heredoc_vars(char *input)
-// {
-
-// }
-
-void	ft_handle_heredoc(t_tokens **tokens, int file_index)
-{
-	char	*input;
-	char	*delimiter;
-	char	*file_name;
-	int		fd;
-
-	file_name = ft_strjoin(ft_strdup("/tmp/tmp"), ft_itoa(file_index));
-	file_name = ft_strjoin(file_name, ft_strdup(".txt"));
-	fd = open(file_name, O_RDWR | O_CREAT | O_TRUNC, 0777);
-	if (fd == -1)
-		return ;
-	delimiter = ft_get_delimiter(*tokens);
-	while ((input = readline("> ")) != NULL)
-	{
-		if (ft_strcmp(input, delimiter))
-			break ;
-		ft_putstr_fd(input, fd);
-		ft_putstr_fd("\n", fd);
-	}
-	close(fd);
-	ft_change_token_value(tokens, file_name);
 }
 
 int	is_there_same_type_next(t_tokens *token, int type)
@@ -266,7 +228,7 @@ int	handle_append_operator(t_tokens **token)
 	return (fd);
 }
 
-int	*ft_handle_redirections(t_tokens **token)
+int	*ft_handle_redirections(t_tokens **token, t_env *envp)
 {
 	t_tokens	*tmp;
 	int			*stds;
@@ -283,7 +245,7 @@ int	*ft_handle_redirections(t_tokens **token)
 	while (tmp && tmp->type != PIPE)
 	{
 		if (tmp->type == HEREDOC_OPERATOR)
-			ft_handle_heredoc(&tmp, file_index);
+			handle_heredoc(&tmp, envp, file_index);
 		if (tmp)
 			tmp = tmp->next;
 	}
@@ -311,7 +273,7 @@ void	ft_get_to_end(t_tokens **token)
 		*token = (*token)->next;
 }
 
-void	ft_cmd_table(t_tokens *token, t_cmds **cmds)
+void	ft_cmd_table(t_tokens *token, t_cmds **cmds, t_env *envp)
 {
 	char	*cmd;
 	int		*stds;
@@ -321,9 +283,9 @@ void	ft_cmd_table(t_tokens *token, t_cmds **cmds)
 	{
 		cmd = ft_get_cmd(token);
 		args = ft_get_args(token, cmd);
-		if (!ft_strcmp(args[0], "export") && access(args[0], F_OK) != 0 && access(args[0], X_OK) != 0)
+		if ((args[0] && !ft_strcmp(args[0], "export")) || (access(args[0], F_OK) != 0 && access(args[0], X_OK) != 0))
 			cmd = NULL;
-		stds = ft_handle_redirections(&token);
+		stds = ft_handle_redirections(&token, envp);
 		ft_lstadd_back_cmd(cmds, ft_lstnew_cmd(cmd, args, stds));
 		ft_get_to_end(&token);
 	}

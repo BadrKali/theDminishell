@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 21:25:42 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/12 21:30:29 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 14:40:04 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	ft_get_envs(char *value)
 	return (count);
 }
 
-char	**ft_check_for_var(t_tokens *token)
+char	**ft_check_for_var(char *value)
 {
 	char	**envs;
 	int		start;
@@ -77,26 +77,26 @@ char	**ft_check_for_var(t_tokens *token)
 
 	i = 0;
 	j = 0;
-	envs = malloc((ft_get_envs(token->value) + 1) * sizeof(char *));
+	envs = malloc((ft_get_envs(value) + 1) * sizeof(char *));
 	if (!envs)
 		return (NULL);
-	while (token->value[i])
+	while (value[i])
 	{
-		if (token->value[i] == '$')
+		if (value[i] == '$')
 		{
 			start = i++;
-			if (token->value[i] && ft_isdigit(token->value[i]))
-				envs[j++] = ft_substr(token->value, start, ++i - start);
-			else if (token->value[i] && !ft_isalpha(token->value[i]))
+			if (value[i] && ft_isdigit(value[i]))
+				envs[j++] = ft_substr(value, start, ++i - start);
+			else if (value[i] && !ft_isalpha(value[i]))
 				i++;
 			else
 			{
-				while (token->value[i] && ft_isalpha(token->value[i]))
+				while (value[i] && ft_isalpha(value[i]))
 					i++;
-				envs[j++] = (ft_substr(token->value, start, i - start));
+				envs[j++] = (ft_substr(value, start, i - start));
 			}
 		}
-		if (token->value[i] != '$')
+		if (value[i] && value[i] != '$')
 			i++;
 	}
 	envs[j] = 0;

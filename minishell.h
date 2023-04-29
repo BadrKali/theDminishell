@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/26 19:29:51 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:26:50 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <signal.h>
 
 #define Err_PIPE "minishell: syntax error near unexpected token `|'"
 
@@ -110,14 +111,17 @@ void	ft_split_input(char *input, t_tokens **token);
 /* PARSING FUNCTIONS */
 
 int		ft_check_syntax(t_tokens *token);
-void	ft_cmd_table(t_tokens *token, t_cmds **cmds);
+void	ft_cmd_table(t_tokens *token, t_cmds **cmds, t_env *envp);
+void	handle_heredoc(t_tokens **tokens, t_env *envp, int file_index);
+char	*ft_get_delimiter(t_tokens *token);
+void	ft_change_token_value(t_tokens **token, char *file_name);
 
 /* EXPANDER FUNCTIONS */
 
 void	ft_expand_vars(t_tokens **token, t_env *envp);
 t_env	*ft_get_var(t_env *envp, char *value);
 char	*ft_remove_name(char *env_name);
-char	**ft_check_for_var(t_tokens *token);
+char	**ft_check_for_var(char *value);
 int		ft_is_only_space(char *value);
 void	ft_initialize_vars(t_utils *utils);
 int		ft_find_var_position(char *value, char *var);

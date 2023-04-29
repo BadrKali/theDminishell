@@ -6,7 +6,7 @@
 #    By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/08 01:08:31 by abahsine          #+#    #+#              #
-#    Updated: 2023/04/20 17:01:10 by abahsine         ###   ########.fr        #
+#    Updated: 2023/04/29 16:26:14 by abahsine         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ utils/libft/ft_isdigit.c utils/libft/ft_strjoin.c utils/libft/ft_itoa.c \
 utils/libft/ft_split.c \
 utils/lexer/ft_count_tokens.c utils/lexer/ft_split_input.c \
 utils/lexer/lexical_analyzer.c \
-utils/parser/ft_check_syntax.c utils/parser/ft_cmd_table.c \
+utils/parser/ft_check_syntax.c utils/parser/ft_cmd_table.c utils/parser/heredoc.c \
+utils/parser/heredoc_utils.c \
 utils/expander/ft_expander.c utils/expander/ft_expander_utils.c \
 utils/expander/ft_expander_utils_2.c
 

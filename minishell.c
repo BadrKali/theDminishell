@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/26 19:25:27 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/28 16:25:52 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[], char *env[])
 		if (!ft_check_syntax(token))
 		{
 			ft_expand_vars(&token, envp);
-			ft_cmd_table(token, &cmd);
+			ft_cmd_table(token, &cmd, envp);
 			t_cmds *tmp = cmd;
 			while (tmp)
 			{
