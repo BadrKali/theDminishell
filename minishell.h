@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 16:26:50 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/30 15:50:27 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,12 @@ char	*ft_handle_space(char *input, int *i);
 char	*ft_hanlde_redirections(char *input, int *i, int flag);
 char	*ft_handle_variable(char *input, int *i);
 char	*ft_handle_string(char *input, int *i);
-void	ft_split_input(char *input, t_tokens **token);
+int		ft_split_input(char *input, t_tokens **token);
 
 /* PARSING FUNCTIONS */
 
 int		ft_check_syntax(t_tokens *token);
+int		check_unclosed_quotes(char *val, int type);
 void	ft_cmd_table(t_tokens *token, t_cmds **cmds, t_env *envp);
 void	handle_heredoc(t_tokens **tokens, t_env *envp, int file_index);
 char	*ft_get_delimiter(t_tokens *token);

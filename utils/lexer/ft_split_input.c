@@ -6,13 +6,11 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:14:31 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/28 18:16:20 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/30 16:02:30 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-//! Handle unclosed quotes better
 
 char	*ft_handle_quotes(char	*input, int *i, char quote)
 {
@@ -24,9 +22,7 @@ char	*ft_handle_quotes(char	*input, int *i, char quote)
 		(*i)++;
 	while (input[*i] && input[*i] != quote)
 		(*i)++;
-	if (input[*i] && input[*i] == quote)
-		return (ft_substr(input, start, ++(*i) - start));
-	return (ft_putstr_fd("You must close quotes...\n", 2), NULL);
+	return (ft_substr(input, start, ++(*i) - start));
 }
 
 char	*ft_handle_space(char *input, int *i)
@@ -57,8 +53,6 @@ char	*ft_hanlde_redirections(char *input, int *i, int flag)
 	}
 	return (NULL);
 }
-
-//! came back and check this
 
 char	*ft_handle_variable(char *input, int *i)
 {

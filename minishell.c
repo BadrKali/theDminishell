@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/28 16:25:52 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/30 18:51:00 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,16 @@ void	close_open_fds(t_cmds *cmd)
 	}
 }
 
+void	free_linked_list(t_tokens **head, t_tokens *token)
+{
+	while (token)
+	{
+		free(token->value);
+		ft_deleteNode(head, token);
+		token = token->next;
+	}
+}
+
 int main(int argc, char *argv[], char *env[])
 {
 	t_tokens	*token;
@@ -107,8 +117,7 @@ int main(int argc, char *argv[], char *env[])
 	while ((input = readline("\e[0;32m$> minishell \e[0m")) != NULL)
 	{
 		add_history(input);
-		ft_split_input(input, &token);
-		if (!ft_check_syntax(token))
+		if (!ft_split_input(input, &token) && !ft_check_syntax(token))
 		{
 			ft_expand_vars(&token, envp);
 			ft_cmd_table(token, &cmd, envp);
@@ -134,8 +143,10 @@ int main(int argc, char *argv[], char *env[])
 			// 	token = token->next;
 			// }
 		}
+		// system("leaks minishell");
 		delete_tmp_files(token);
 		close_open_fds(cmd);
+		// free_linked_list(&token, token);
 		token = NULL;
 		cmd = NULL;
 	}

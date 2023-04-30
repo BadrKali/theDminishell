@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 20:12:09 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 16:46:47 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/04/30 16:40:10 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,17 @@ int	ft_check_token_pos(char **token, int i)
 
 void	word_token(t_tokens **token, char **tok, int *i)
 {
-	// int	tmp;
-
-	// tmp = *i;
-	// tmp++;
-	// while (tok[tmp] && tok[tmp][0] != ' ' && (tok[tmp][0] == '\'' || tok[tmp][0] == '\"'))
-	// 	tok[*i] = ft_strjoin(tok[*i], tok[tmp++]);
 	ft_lstadd_back_token(token, ft_lstnew_token(tok[*i], WORD));
 	(*i)++;
 }
 
-void	quotes_token(t_tokens **token, char *tok, int tok_name, int *i)
+int	quotes_token(t_tokens **token, char *tok, int type, int *i)
 {
-	ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tok, 1, ft_strlen(tok) - 2), tok_name));
+	if (check_unclosed_quotes(tok, type))
+		return (1);
+	ft_lstadd_back_token(token, ft_lstnew_token(ft_substr(tok, 1, ft_strlen(tok) - 2), type));
 	(*i)++;
+	return (0);
 }
 
 void	check_for_word_next(t_tokens **token)
@@ -97,17 +94,23 @@ void	check_for_word_next(t_tokens **token)
 	}
 }
 
-void    ft_tokenizer(char **tokens, t_tokens **token)
+int	ft_tokenizer(char **tokens, t_tokens **token)
 {
 	int i;
 
 	i = 0;
 	while (tokens[i])
 	{
-		if (tokens[i][0] == '\'')		
-			quotes_token(token, tokens[i], S_QUOTES, &i);
+		if (tokens[i][0] == '\'')
+		{
+			if (quotes_token(token, tokens[i], S_QUOTES, &i))
+				return (1);
+		}
 		else if (tokens[i][0] == '\"')
-			quotes_token(token, tokens[i], QUOTES, &i);
+		{
+			if (quotes_token(token, tokens[i], QUOTES, &i))
+				return (1);
+		}
 		else if (tokens[i][0] == ' ')
 			ft_lstadd_back_token(token, ft_lstnew_token(tokens[i++], T_SPACE));
 		else if (tokens[i][0] && tokens[i][1]
@@ -130,6 +133,7 @@ void    ft_tokenizer(char **tokens, t_tokens **token)
 			word_token(token, tokens, &i);
 	}
 	check_for_word_next(token);
+	return (free_memory(tokens), 0);
 }
 
 int	ft_check_is_end(char *input, int i)
@@ -141,7 +145,7 @@ int	ft_check_is_end(char *input, int i)
 	return (0);
 }
 
-void	ft_split_input(char *input, t_tokens **token)
+int	ft_split_input(char *input, t_tokens **token)
 {
 	char	**tokens;
 	int		i;
@@ -173,5 +177,5 @@ void	ft_split_input(char *input, t_tokens **token)
 			tokens[j++] = ft_handle_string(input, &i);
 	}
 	tokens[j] = 0;
-	ft_tokenizer(tokens, token);
+	return (ft_tokenizer(tokens, token));
 }

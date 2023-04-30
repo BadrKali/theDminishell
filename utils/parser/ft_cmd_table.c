@@ -81,6 +81,16 @@ int	is_there_forwardslash(char *cmd)
 	return (0);
 }
 
+void	free_split(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+		free(tab[i++]);
+	// free(tab);
+}
+
 char	*get_path(char *cmd)
 {
 	char	*PATH;
@@ -97,10 +107,11 @@ char	*get_path(char *cmd)
 		PATH = ft_strjoin(tab[i], "/");
 		PATH = ft_strjoin(PATH, cmd);
 		if (access(PATH, F_OK) == 0 && access(PATH, X_OK) == 0)
-			return (PATH);
+			return (free_split(&tab[++i]), PATH);
+		free(PATH);
 		i++;
 	}
-	return (cmd);
+	return (free_split(&tab[++i]), cmd);
 }
 
 char	**ft_get_args(t_tokens *token, char *cmd)
