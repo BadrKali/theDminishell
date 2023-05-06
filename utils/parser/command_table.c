@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:07:26 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/06 19:51:31 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/06 20:44:48 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,8 @@ void	get_to_end(t_tokens **token)
 	while (*token && (*token)->type != PIPE)
 		*token = (*token)->next;
 	if (*token && (*token)->type == PIPE)
+		*token = (*token)->next;
+	if (*token && (*token)->type == T_SPACE)
 		*token = (*token)->next;
 }
 
