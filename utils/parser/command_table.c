@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:07:26 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/06 19:28:21 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/06 19:51:31 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,9 +335,9 @@ void	command_table(t_tokens *token, t_cmds **cmd, t_envp *envp)
 	{
 		command = get_command(token);
 		args = get_arguments(token, command);
-		if ((args[0] && !ft_strcmp(args[0], "export")) && access(args[0], F_OK) != 0
-			&& access(args[0], X_OK) != 0)
-			command = NULL;
+		// if ((args[0] && !ft_strcmp(args[0], "export")) && access(args[0], F_OK) != 0
+		// 	&& access(args[0], X_OK) != 0)
+		// 	command = NULL;
 		stds = handle_redirections_for_cmd(&token, envp);
 		ft_lstadd_back_cmd(cmd, ft_lstnew_cmd(command, args, stds));
 		get_to_end(&token);
