@@ -5,47 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/06 17:22:52 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/30 18:51:00 by abahsine         ###   ########.fr       */
+/*   Created: 2023/05/04 13:14:08 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/06 19:24:43 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_get_var_name(char *env)
+void	*free_2d_arrays(char **res)
 {
-	char	*env_name;
-	int		i;
-	int		j;
+	int	j;
 
-	i = 0;
 	j = 0;
-	while (env[i] && env[i] != '=')
-		i++;
-	env_name = malloc((i + 2) * sizeof(char));
-	if (!env_name)
-		return (NULL);
-	env_name[0] = '$';
-	i = 1;
-	while (env[j] && env[j] != '=')
-	{
-		env_name[i] = env[j++];
-		i++;
-	}
-	env_name[i] = '\0';
-	return (env_name);
-}
-
-void	ft_fill_envp(t_env **envp, char *env[])
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-	{
-		ft_lstadd_back_envp(envp, ft_lstnew_envp(ft_strdup(env[i]), ft_get_var_name(env[i])));
-		i++;
-	}
+	while (res[j] != NULL)
+		j++;
+	while (j--)
+		free(res[j]);
+	free(res);
+	return (NULL);
 }
 
 int	check_start(char *val)
@@ -73,10 +50,11 @@ void	delete_tmp_files(t_tokens *token)
 			token = token->next;
 			if (token && token->type == T_SPACE)
 				token = token->next;
-			if (!check_start(token->value))
+			if (token && !check_start(token->value))
 				unlink(token->value);
 		}
-		token = token->next;
+		if (token)
+			token = token->next;
 	}
 }
 
@@ -92,35 +70,38 @@ void	close_open_fds(t_cmds *cmd)
 	}
 }
 
-void	free_linked_list(t_tokens **head, t_tokens *token)
-{
-	while (token)
-	{
-		free(token->value);
-		ft_deleteNode(head, token);
-		token = token->next;
-	}
-}
-
-int main(int argc, char *argv[], char *env[])
+int	main(int argc, char *argv[], char *env[])
 {
 	t_tokens	*token;
-	t_env		*envp;
+	t_envp		*envp;
 	t_cmds		*cmd;
 	char		*input;
 
-	(void)argc, (void)argv;
+	if (argc != 1)
+		return (1);
+	(void)argv;
 	token = NULL;
 	envp = NULL;
 	cmd = NULL;
-	ft_fill_envp(&envp, env);
-	while ((input = readline("\e[0;32m$> minishell \e[0m")) != NULL)
+	fill_env_pointer(&envp, env);
+	while ((input = readline("> minishell ")) != NULL)
 	{
 		add_history(input);
-		if (!ft_split_input(input, &token) && !ft_check_syntax(token))
+		if (!input_tokenizer(&token, envp, input) && !syntax_checker(token))
 		{
-			ft_expand_vars(&token, envp);
-			ft_cmd_table(token, &cmd, envp);
+			expand_variables(&token, envp);
+			command_table(token, &cmd, envp);
+			// -------------------
+			// t_tokens *tmp = token;
+			// while (tmp)
+			// {
+			// 	printf("value: [%s]\n", tmp->value);
+			// 	printf("type: [%d]\n", tmp->type);
+			// 	printf("is_joined: [%d]\n", tmp->is_joined);
+			// 	printf("--------------------------\n");
+			// 	tmp = tmp->next;
+			// }
+			// -------------------
 			t_cmds *tmp = cmd;
 			while (tmp)
 			{
@@ -135,18 +116,10 @@ int main(int argc, char *argv[], char *env[])
 				printf("std_out: %d\n", tmp->std_out);
 				tmp = tmp->next;
 			}
-			// while (token)
-			// {
-			// 	printf("value: [%s]\n", token->value);
-			// 	printf("type: [%d]\n", token->type);
-			// 	printf("--------------------------\n");
-			// 	token = token->next;
-			// }
+			// -------------------
 		}
-		// system("leaks minishell");
 		delete_tmp_files(token);
 		close_open_fds(cmd);
-		// free_linked_list(&token, token);
 		token = NULL;
 		cmd = NULL;
 	}

@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/29 16:18:13 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 18:53:28 by abahsine         ###   ########.fr       */
+/*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/06 19:33:43 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	*rewrite_string_heredoc(char *value, char *var, t_env *tmp)
+static char	*rewrite_string_heredoc(char *value, char *var, t_envp *tmp)
 {
 	char	*first_half;
 	char	*second_half;
@@ -24,17 +24,21 @@ char	*rewrite_string_heredoc(char *value, char *var, t_env *tmp)
 	if (len == 1 || (var[1] && (var[1] == '|' || var[ 1] == '<'
 		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
-	expanded = ft_remove_name(tmp->env_name);
-	pos = ft_find_var_position(value, var);
+	expanded = ft_strdup(tmp->envp_value);
+	pos = find_variable_position(value, var);
 	first_half = ft_strdup("");
 	if (pos != 0)
+	{
+		free(first_half);
 		first_half = ft_substr(value, 0, pos);
+	}
 	first_half = ft_strjoin(first_half, expanded);
 	second_half = ft_substr(value, pos + len, ft_strlen(&value[len]));
-	return (ft_strjoin(first_half, second_half));
+	first_half = ft_strjoin(first_half, second_half);
+	return (free(value), free(expanded), free(second_half), first_half);
 }
 
-char	*remove_false_vars_heredoc(char *value, char *var)
+static char	*remove_false_vars_heredoc(char *value, char *var)
 {
 	char	*first_half;
 	char	*second_half;
@@ -46,54 +50,86 @@ char	*remove_false_vars_heredoc(char *value, char *var)
 		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	first_half = ft_strdup("");
-	pos = ft_find_var_position(value, var);
+	pos = find_variable_position(value, var);
 	if (pos != 0)
+	{
+		free(first_half);
 		first_half = ft_substr(value, 0, pos);
+	}
 	second_half = ft_substr(value, pos + len, ft_strlen(&value[len]));
-	return (ft_strjoin(first_half, second_half));
+	first_half = ft_strjoin(first_half, second_half);
+	return (free(value), free(second_half), first_half);
 }
 
-char	*handle_heredoc_vars(char *input, t_env *envp)
+static char	*handle_heredoc_variables(char *input, t_envp *envp)
 {
-	t_env	*tmp;
+	t_envp	*tmp;
 	char	**var;
 	int		i;
 
 	i = 0;
-	var = ft_check_for_var(input);
+	var = find_variables_in_quotes(input);
 	while (var[i])
 	{
-		tmp = ft_get_var(envp, var[i]);
+		tmp = get_variable(envp, var[i]);
 		if (tmp)
 			input = rewrite_string_heredoc(input, var[i], tmp);
 		else
 			input = remove_false_vars_heredoc(input, var[i]);
+		free(var[i]);
 		i++;
 	}
+	free(var);
 	return (input);
 }
 
-void	handle_heredoc(t_tokens **tokens, t_env *envp, int file_index)
+int	check_is_joined(t_tokens *token)
+{
+	token = token->next;
+	if (token->type == T_SPACE)
+		token = token->next;
+	if (token->is_joined != 1)
+		return (1);
+	return (0);
+}
+
+static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 {
 	char	*input;
+	char	*buffer;
 	char	*delimiter;
-	char	*file_name;
-	int		fd;
 
-	file_name = ft_strjoin(ft_strdup("/tmp/tmp"), ft_itoa(file_index));
-	file_name = ft_strjoin(file_name, ft_strdup(".txt"));
-	fd = open(file_name, O_RDWR | O_CREAT | O_TRUNC, 0777);
-	if (fd == -1)
-		return ;
-	delimiter = ft_get_delimiter(*tokens);
+	delimiter = get_delimiter(*token);
+	buffer = ft_strdup("");
 	while ((input = readline("> ")) != NULL)
 	{
 		if (ft_strcmp(input, delimiter))
 			break ;
-		input = handle_heredoc_vars(input, envp);
-		ft_putstr_fd(input, fd);
-		ft_putstr_fd("\n", fd);
+		if (!check_delimiter_type(*token) && check_is_joined(*token))
+			input = handle_heredoc_variables(input, envp);
+		buffer = ft_strjoin(buffer, input);
+		buffer = ft_strjoin(buffer, "\n");
+		free(input);
 	}
+	ft_putstr_fd(buffer, fd);
+	free(buffer);
+	free(input);
 	close(fd);
-	ft_change_token_value(tokens, file_name);
+}
+
+int	handle_heredoc(t_tokens **token, t_envp *envp, int file_index)
+{
+	char	*file_name;
+	char	*index;
+	int		fd;
+
+	index = ft_itoa(file_index);
+	file_name = ft_strjoin(ft_strdup("/tmp/tmp"), index);
+	file_name = ft_strjoin(file_name, ".txt");
+	fd = open(file_name, O_RDWR | O_CREAT | O_TRUNC, 0777);
+	if (fd == -1)
+		return (free(index), fd);
+	read_heredoc_input(token, envp, fd);
+	change_token_value(token, file_name);
+	return (free(index), 0);
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/06 17:23:15 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/30 15:50:27 by abahsine         ###   ########.fr       */
+/*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/06 16:27:00 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,37 +14,27 @@
 # define MINISHELL_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
+
 #include <readline/history.h>
 #include <readline/readline.h>
-#include <signal.h>
-
-#define Err_PIPE "minishell: syntax error near unexpected token `|'"
-
-/* LINKED LISTS */
 
 typedef struct s_tokens {
-    int             type;
-    char            *value;
-    struct s_tokens *next;
+	int             type;
+	char            *value;
+	int             is_joined;
+	struct s_tokens *next;
 	struct s_tokens *prev;
 } t_tokens;
 
-typedef struct s_utils {
-    int				i;
-    int				j;
-    int				k;
-    int				start;
-} t_utils;
-
-typedef struct s_env {
-    char            *env_name;
-    char            *name;
-    struct s_env *next;
-	struct s_env *prev;
-} t_env;
+typedef struct s_envp {
+	char            *envp_name;
+	char            *envp_value;
+	struct s_envp   *next;
+	struct s_envp   *prev;
+} t_envp;
 
 typedef struct s_cmds {
 	char			*cmd;
@@ -58,7 +48,6 @@ typedef struct s_cmds {
 enum tokens {
 	WORD,
 	T_SPACE,
-	ARG,
 	OR_OPERATOR,
 	IR_OPERATOR,
 	HEREDOC_OPERATOR,
@@ -69,62 +58,71 @@ enum tokens {
 	VAR
 };
 
-/* LIBFT FUNCTIONS */
+/**************
+LIBFT FUNCTIONS
+***************/
 
-char	    *ft_substr(char *s, unsigned int start, size_t len);
-void	    ft_putstr_fd(char *s, int fd);
-size_t	    ft_strlen(char *s);
 char		*ft_strdup(char *s1);
-char		*ft_strjoin(char *s1, char *s2);
-int         ft_isalpha(int c);
+char		*ft_substr(char *s, unsigned int start, size_t len);
+size_t		ft_strlen(char *s);
+int			ft_isalpha(int c);
 int			ft_isdigit(int c);
 int			ft_strcmp(char *s1, char *s2);
-t_tokens	*ft_lstnew_token(char *value, int type);
-t_cmds		*ft_lstnew_cmd(char *command, char **args, int *stds);
-void 		ft_deleteNode(t_tokens **head_ref, t_tokens *del);
-t_env		*ft_lstnew_envp(char *value, char *name);
-void	    ft_lstadd_back_token(t_tokens **lst, t_tokens *new);
-t_tokens	*ft_lstlast_token(t_tokens *lst);
-void		ft_lstadd_back_envp(t_env **lst, t_env *new);
-void		ft_lstadd_back_cmd(t_cmds **lst, t_cmds *new);
 char		*ft_itoa(int n);
+void		ft_putstr_fd(char *s, int fd);
+char		*ft_strjoin(char *s1, char *s2);
+void		ft_deleteNode(t_tokens **head_ref, t_tokens *del);
+t_tokens	*ft_lstnew_token(char *value, int type);
+t_tokens	*ft_lstlast_token(t_tokens *lst);
+void		ft_lstadd_back_token(t_tokens **lst, t_tokens *new);
+void		ft_lstadd_back_cmd(t_cmds **lst, t_cmds *new);
+t_cmds		*ft_lstnew_cmd(char *command, char **args, int *stds);
 char		**ft_split(char *s, char c);
-void		*free_memory(char **res);
+void		*free_2d_arrays(char **res);
 
-/* COUNT TOKENS FUNCTIONS */
+void    fill_env_pointer(t_envp **envp, char *env[]);
 
-void	ft_get_quotes_len(char *input, int *i, int *count, char quote);
-void	ft_get_spaces_len(char *input, int *i, int *count);
-void	ft_get_redirections_len(int *i, int *count, int flag);
-void	ft_get_var_len(char *input, int *i, int *count);
-void	ft_get_string_len(char *input, int *i, int *count);
+/******************
+TOKENIZER FUNCTIONS
+******************/
 
-/* SPLIT INPUT FUNCTIONS */
-
-char	*ft_handle_quotes(char	*input, int *i, char quote);
-char	*ft_handle_space(char *input, int *i);
-char	*ft_hanlde_redirections(char *input, int *i, int flag);
-char	*ft_handle_variable(char *input, int *i);
-char	*ft_handle_string(char *input, int *i);
-int		ft_split_input(char *input, t_tokens **token);
-
-/* PARSING FUNCTIONS */
-
-int		ft_check_syntax(t_tokens *token);
+int		input_tokenizer(t_tokens **token, t_envp *envp, char *input);
+void	handle_string(t_tokens **token, char *input, int *end);
+void	handle_variable(t_tokens **token, t_envp *envp, char *input, int *end);
+void	handle_redirections(t_tokens **token, char *input, int *i, int flag);
+void	handle_redirections_flag_one(t_tokens **token, char *input, int start, int *end);
+void	handle_redirections_flag_two(t_tokens **token, char *input, int start, int *end);
+void	handle_space(t_tokens **token, char *input, int *i);
+int		check_is_end(char *input, int i);
+int		handle_quotes(t_tokens **token, t_envp *envp, char *input, int type, int *i);
 int		check_unclosed_quotes(char *val, int type);
-void	ft_cmd_table(t_tokens *token, t_cmds **cmds, t_env *envp);
-void	handle_heredoc(t_tokens **tokens, t_env *envp, int file_index);
-char	*ft_get_delimiter(t_tokens *token);
-void	ft_change_token_value(t_tokens **token, char *file_name);
+int		find_quotes(char *val, int c);
 
-/* EXPANDER FUNCTIONS */
+/****************
+PARSER FUNCTIONS
+****************/
 
-void	ft_expand_vars(t_tokens **token, t_env *envp);
-t_env	*ft_get_var(t_env *envp, char *value);
-char	*ft_remove_name(char *env_name);
-char	**ft_check_for_var(char *value);
-int		ft_is_only_space(char *value);
-void	ft_initialize_vars(t_utils *utils);
-int		ft_find_var_position(char *value, char *var);
+int		syntax_checker(t_tokens *token);
+void	command_table(t_tokens *token, t_cmds **cmd, t_envp *envp);
+int		handle_heredoc(t_tokens **tokens, t_envp *envp, int file_index);
+char	*get_delimiter(t_tokens *token);
+void	change_red_value(t_tokens **token);
+void	change_delimiter_value(t_tokens **token, char *file_name);
+void	change_token_value(t_tokens **token, char *file_name);
+int		check_delimiter_type(t_tokens *token);
+
+/*****************
+EXPANDER FUNCTIONS
+*****************/
+
+void	expand_variables(t_tokens **token, t_envp *envp);
+void    handle_variables_in_quotes(t_tokens **token, t_envp *envp, t_tokens **head);
+void	get_variables_in_quotes(char **envs, char *value, int *i, int *j);
+t_envp	*get_variable(t_envp *envp, char *value);
+int		get_envs_in_quotes_len(char *value);
+int		find_variable_position(char *value, char *var);
+char	**find_variables_in_quotes(char *value);
+void	handle_variables(t_tokens **token, t_envp *envp, t_tokens **head);
+t_envp	*get_variable(t_envp *envp, char *value);
 
 #endif

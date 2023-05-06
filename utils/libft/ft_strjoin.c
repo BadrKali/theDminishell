@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:34:05 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/30 16:24:10 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/04 15:31:10 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	j = 0;
 	i = 0;
 	len = ft_strlen(s1) + ft_strlen(s2);
-	str_join = malloc((len + 1) * sizeof(char));
+	str_join = malloc(len + 1 * sizeof(char));
 	if (!str_join)
 		return (NULL);
 	while (s1[i])
@@ -40,5 +40,5 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}
 	str_join[i] = '\0';
-	return (free(s1), str_join);
+	return (str_join);
 }

@@ -1,0 +1,7 @@
+- handle double free because of envp "$PWD dfsf"
+
+- Test tabs
+
+export var="ls -la"
+
+$var$PWD two times abort

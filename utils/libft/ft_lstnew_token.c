@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew_token.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/09 18:02:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/17 16:35:31 by abahsine         ###   ########.fr       */
+/*   Created: 2023/05/04 13:52:41 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/06 16:26:52 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,37 +36,28 @@ t_tokens	*ft_lstnew_token(char *value, int type)
 		return (NULL);
 	token->value = value;
 	token->type = type;
+	token->is_joined = -1;
 	token->next = NULL;
 	token->prev = NULL;
 	return (token);
 }
 
-t_env	*ft_lstnew_envp(char *value, char *name)
+t_tokens	*ft_lstlast_token(t_tokens *lst)
 {
-	t_env	*envp;
-
-	envp = (t_env *)malloc(sizeof(t_env));
-	if (!envp)
+	if (lst == NULL)
 		return (NULL);
-	envp->env_name = value;
-	envp->name = name;
-	envp->next = NULL;
-	envp->prev = NULL;
-	return (envp);
+	while (lst->next != NULL)
+		lst = lst->next;
+	return (lst);
 }
 
-t_cmds	*ft_lstnew_cmd(char *command, char **args, int *stds)
+void	ft_lstadd_back_token(t_tokens **lst, t_tokens *new)
 {
-	t_cmds	*cmd;
-
-	cmd = (t_cmds *)malloc(sizeof(t_cmds));
-	if (!cmd)
-		return (NULL);
-	cmd->cmd = command;
-	cmd->args = args;
-	cmd->std_in = stds[0];
-	cmd->std_out = stds[1];
-	cmd->next = NULL;
-	cmd->prev = NULL;
-	return (cmd);
+	if (*lst == NULL)
+		*lst = new;
+	else
+	{
+		new->prev = ft_lstlast_token(*lst);
+		ft_lstlast_token(*lst)->next = new;
+	}
 }

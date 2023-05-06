@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/20 20:25:51 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/04 21:15:34 by abahsine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static int	count_delimiters(char *s, char c, int len)
@@ -41,19 +53,6 @@ static char	*split_array(char *s, int start, int end)
 	return (ptr);
 }
 
-void	*free_memory(char **res)
-{
-	int	j;
-
-	j = 0;
-	while (res[j] != NULL)
-		j++;
-	while (j--)
-		free(res[j]);
-	free(res);
-	return (NULL);
-}
-
 static char	**split(char *s, char c, char **res, int len)
 {
 	int		i;
@@ -72,7 +71,7 @@ static char	**split(char *s, char c, char **res, int len)
 		{
 			str = split_array(s, start, i);
 			if (!str)
-				return (free_memory(res));
+				return (free_2d_arrays(res));
 			else
 				res[j++] = str;
 			start = -1;

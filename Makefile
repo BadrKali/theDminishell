@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/04/08 01:08:31 by abahsine          #+#    #+#              #
-#    Updated: 2023/04/29 16:26:14 by abahsine         ###   ########.fr        #
+#    Created: 2023/05/04 13:13:34 by abahsine          #+#    #+#              #
+#    Updated: 2023/05/05 19:54:15 by abahsine         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,17 +14,18 @@ NAME = minishell
 
 CFLAGS = -Wall -Wextra -Werror
 
-CFILES = minishell.c utils/libft/ft_substr.c utils/libft/ft_putstr_fd.c \
-utils/libft/ft_strlen.c utils/libft/ft_isalpha.c utils/libft/ft_strdup.c \
-utils/libft/ft_lstadd_back.c utils/libft/ft_lstnew.c utils/libft/ft_strcmp.c \
-utils/libft/ft_isdigit.c utils/libft/ft_strjoin.c utils/libft/ft_itoa.c \
-utils/libft/ft_split.c \
-utils/lexer/ft_count_tokens.c utils/lexer/ft_split_input.c \
-utils/lexer/lexical_analyzer.c \
-utils/parser/ft_check_syntax.c utils/parser/ft_cmd_table.c utils/parser/heredoc.c \
+CFILES = minishell.c \
+utils/env_utils.c \
+utils/libft/ft_strdup.c utils/libft/ft_strlen.c utils/libft/ft_lstnew_token.c \
+utils/libft/ft_substr.c utils/libft/ft_putstr_fd.c utils/libft/ft_isalpha.c \
+utils/libft/ft_strjoin.c utils/libft/ft_itoa.c utils/libft/ft_isdigit.c \
+utils/libft/ft_strcmp.c utils/libft/ft_lstnew_cmd.c utils/libft/ft_split.c \
+utils/tokenizer/tokenizer.c utils/tokenizer/tokenizer_utils.c \
+utils/tokenizer/token_handlers.c \
+utils/parser/syntax_analyzer.c utils/parser/command_table.c utils/parser/heredoc.c \
 utils/parser/heredoc_utils.c \
-utils/expander/ft_expander.c utils/expander/ft_expander_utils.c \
-utils/expander/ft_expander_utils_2.c
+utils/expander/expand_variables.c utils/expander/variables_in_quotes_handler.c \
+utils/expander/variables_handler.c utils/expander/variables_in_quotes_utils.c \
 
 OFILES = ${CFILES:.c=.o}
 

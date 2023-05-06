@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/29 16:24:43 by abahsine          #+#    #+#             */
-/*   Updated: 2023/04/29 18:52:46 by abahsine         ###   ########.fr       */
+/*   Created: 2023/05/05 11:36:03 by abahsine          #+#    #+#             */
+/*   Updated: 2023/05/05 11:46:16 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-char	*ft_get_delimiter(t_tokens *token)
+char	*get_delimiter(t_tokens *token)
 {
 	token = token->next;
 	if (token->type == T_SPACE)
@@ -20,7 +20,7 @@ char	*ft_get_delimiter(t_tokens *token)
 	return (token->value);
 }
 
-void	ft_change_red_value(t_tokens **token)
+void	change_red_value(t_tokens **token)
 {
 	free((*token)->value);
 	(*token)->value = ft_strdup("<");
@@ -28,19 +28,29 @@ void	ft_change_red_value(t_tokens **token)
 	*token = (*token)->next;
 }
 
-void	ft_change_delimiter_value(t_tokens **token, char *file_name)
+void	change_delimiter_value(t_tokens **token, char *file_name)
 {
 	free((*token)->value);
 	(*token)->value = file_name;
 	*token = (*token)->next;
 }
 
-void	ft_change_token_value(t_tokens **token, char *file_name)
+void	change_token_value(t_tokens **token, char *file_name)
 {
-	ft_change_red_value(token);
+	change_red_value(token);
 	if (*token && (*token)->type == T_SPACE)
 		*token = (*token)->next;
-	if (*token && ((*token)->type == ARG || (*token)->type == VAR
+	if (*token && ((*token)->type == WORD || (*token)->type == VAR
 		|| (*token)->type == QUOTES || (*token)->type == S_QUOTES))
-		ft_change_delimiter_value(token, file_name);
+		change_delimiter_value(token, file_name);
+}
+
+int	check_delimiter_type(t_tokens *token)
+{
+	token = token->next;
+	if (token && token->type == T_SPACE)
+		token = token->next;
+	if (token && (token->type == QUOTES || token->type == S_QUOTES))
+		return (1);
+	return (0);
 }
