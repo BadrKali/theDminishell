@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:34:05 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/04 15:31:10 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:40:22 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		i++;
 	}
 	while (s2[j])
-	{
-		str_join[i++] = s2[j];
-		j++;
-	}
+		str_join[i++] = s2[j++];
 	str_join[i] = '\0';
-	return (str_join);
+	return (free(s1), str_join);
 }

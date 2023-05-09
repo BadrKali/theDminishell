@@ -6,25 +6,25 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:52:41 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/06 16:26:52 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:35:11 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void ft_deleteNode(t_tokens **head_ref, t_tokens *del)
+void	ft_deletenode(t_tokens **head_ref, t_tokens *del)
 {
-    if (*head_ref == NULL || del == NULL)
-        return;
-    if (*head_ref == del)
-        *head_ref = del->next;
-    if (del->next != NULL)
-        del->next->prev = del->prev;
-    if (del->prev != NULL)
-        del->prev->next = del->next;
-    free(del->value);
-    free(del);
-    return;
+	if (*head_ref == NULL || del == NULL)
+		return ;
+	if (*head_ref == del)
+		*head_ref = del->next;
+	if (del->next != NULL)
+		del->next->prev = del->prev;
+	if (del->prev != NULL)
+		del->prev->next = del->next;
+	free(del->value);
+	free(del);
+	return ;
 }
 
 t_tokens	*ft_lstnew_token(char *value, int type)

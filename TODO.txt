@@ -5,3 +5,9 @@
 export var="ls -la"
 
 $var$PWD two times abort
+
+. -> wrong
+$var with space -> leaks
+$?hj -> maybe wrokng in echo
+"  "
+"$var1"

@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:53:57 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/06 17:09:03 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:33:27 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static int	check_is_after_heredoc(t_tokens **token)
 {
 	if ((*token)->prev && (*token)->prev->type == T_SPACE)
 	{
-		if ((*token)->prev->prev && (*token)->prev->prev->type == HEREDOC_OPERATOR)
+		if ((*token)->prev->prev
+			&& (*token)->prev->prev->type == HEREDOC_OPERATOR)
 			return (1);
 	}
 	else if ((*token)->prev && (*token)->prev->type == HEREDOC_OPERATOR)
@@ -62,5 +63,5 @@ void	handle_variables(t_tokens **token, t_envp *envp, t_tokens **head)
 	if (tmp)
 		handle_true_variable(token, tmp);
 	else
-		ft_deleteNode(head, *token);
+		ft_deletenode(head, *token);
 }

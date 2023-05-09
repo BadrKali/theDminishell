@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:57:21 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/04 20:58:17 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 14:31:37 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	get_variables_in_quotes(char **envs, char *value, int *i, int *j)
 {
-	int start;
+	int	start;
 
 	start = (*i)++;
 	if (value[*i] && ft_isdigit(value[*i]))
@@ -23,10 +23,19 @@ void	get_variables_in_quotes(char **envs, char *value, int *i, int *j)
 		(*i)++;
 	else
 	{
-		while (value[*i] && ft_isalpha(value[*i]))
+		while (value[*i] && (ft_isalpha(value[*i]) || ft_isdigit(value[*i])
+				|| value[*i] == '_'))
 			(*i)++;
 		envs[(*j)++] = ft_substr(value, start, (*i) - start);
 	}
+}
+
+static void	count_and_skip_variable(char *value, int *i, int *count)
+{
+	while (value[*i] && (ft_isalpha(value[*i] || ft_isdigit(value[*i])
+				|| value[*i] == '_')))
+		(*i)++;
+	(*count)++;
 }
 
 int	get_envs_in_quotes_len(char *value)
@@ -49,11 +58,7 @@ int	get_envs_in_quotes_len(char *value)
 			else if (value[i] && !ft_isalpha(value[i]))
 				i++;
 			else
-			{
-				while (value[i] && ft_isalpha(value[i]))
-					i++;
-				count++;
-			}
+				count_and_skip_variable(value, &i, &count);
 		}
 		else
 			i++;

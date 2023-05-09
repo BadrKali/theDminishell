@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:51:39 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/05 11:48:43 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 14:28:46 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ static char	*remove_false_variables(char *value, char *var)
 	char	*second_half;
 	int		pos;
 	int		len;
-	
+
 	len = ft_strlen(var);
-	if (len == 1 || (var[1] && (var[1] == '|' || var[ 1] == '<'
-		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
+	if (len == 1 || (var[1] && (var[1] == '|' || var[1] == '<'
+				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	first_half = ft_strdup("");
 	pos = find_variable_position(value, var);
@@ -67,7 +67,7 @@ static char	*rewrite_string(char *value, char *var, t_envp *tmp)
 
 	len = ft_strlen(var);
 	if (len == 1 || (var[1] && (var[1] == '|' || var[1] == '<'
-		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
+				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	expanded = ft_strdup(tmp->envp_value);
 	pos = find_variable_position(value, var);
@@ -83,21 +83,7 @@ static char	*rewrite_string(char *value, char *var, t_envp *tmp)
 	return (free(value), free(expanded), free(second_half), first_half);
 }
 
-static int	is_quotes_only_space(char *value)
-{
-	int	i;
-
-	i = 0;
-	while (value[i] && (value[i] == ' ' || value[i] == '\t'
-		|| value[i] == '\n' || value[i] == '\r' || value[i] == '\f'
-		|| value[i] == '\v'))
-		i++;
-	if (value[i] == '\0')
-		return (1);
-	return (0);
-}
-
-void    handle_variables_in_quotes(t_tokens **token, t_envp *envp, t_tokens **head)
+void	handle_variables_in_quotes(t_tokens **token, t_envp *envp)
 {
 	t_envp	*tmp;
 	char	**var;
@@ -116,6 +102,4 @@ void    handle_variables_in_quotes(t_tokens **token, t_envp *envp, t_tokens **he
 		i++;
 	}
 	free(var);
-	if (ft_strlen((*token)->value) && is_quotes_only_space((*token)->value))
-		ft_deleteNode(head, *token);
 }

@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/06 19:33:43 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 13:58:02 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static char	*rewrite_string_heredoc(char *value, char *var, t_envp *tmp)
 	int		len;
 
 	len = ft_strlen(var);
-	if (len == 1 || (var[1] && (var[1] == '|' || var[ 1] == '<'
-		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
+	if (len == 1 || (var[1] && (var[1] == '|' || var[1] == '<'
+				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	expanded = ft_strdup(tmp->envp_value);
 	pos = find_variable_position(value, var);
@@ -44,10 +44,10 @@ static char	*remove_false_vars_heredoc(char *value, char *var)
 	char	*second_half;
 	int		pos;
 	int		len;
-	
+
 	len = ft_strlen(var);
-	if (len == 1 || (var[1] && (var[1] == '|' || var[ 1] == '<'
-		|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
+	if (len == 1 || (var[1] && (var[1] == '|' || var[1] == '<'
+				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	first_half = ft_strdup("");
 	pos = find_variable_position(value, var);
@@ -83,16 +83,6 @@ static char	*handle_heredoc_variables(char *input, t_envp *envp)
 	return (input);
 }
 
-int	check_is_joined(t_tokens *token)
-{
-	token = token->next;
-	if (token->type == T_SPACE)
-		token = token->next;
-	if (token->is_joined != 1)
-		return (1);
-	return (0);
-}
-
 static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 {
 	char	*input;
@@ -101,7 +91,8 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 
 	delimiter = get_delimiter(*token);
 	buffer = ft_strdup("");
-	while ((input = readline("> ")) != NULL)
+	input = readline("> ");
+	while (input != NULL)
 	{
 		if (ft_strcmp(input, delimiter))
 			break ;
@@ -110,6 +101,7 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 		buffer = ft_strjoin(buffer, input);
 		buffer = ft_strjoin(buffer, "\n");
 		free(input);
+		input = readline("> ");
 	}
 	ft_putstr_fd(buffer, fd);
 	free(buffer);

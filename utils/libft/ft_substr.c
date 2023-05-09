@@ -6,11 +6,20 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 19:26:32 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/04 20:41:21 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:41:05 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+char	*empty_string(char *sub_str)
+{
+	sub_str = malloc(1 * sizeof(char));
+	if (!sub_str)
+		return (NULL);
+	sub_str[0] = '\0';
+	return (sub_str);
+}
 
 char	*ft_substr(char *s, unsigned int start, size_t len)
 {
@@ -21,15 +30,10 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	if (!s)
 		return (NULL);
 	i = 0;
+	sub_str = NULL;
 	length = ft_strlen(s);
 	if (start >= length)
-	{
-		sub_str = malloc(1 * sizeof(char));
-		if (!sub_str)
-			return (NULL);
-		sub_str[0] = '\0';
-		return (sub_str);
-	}
+		return (empty_string(sub_str));
 	if (len > length - start)
 		sub_str = malloc((length - start + 1) * sizeof(char));
 	else
