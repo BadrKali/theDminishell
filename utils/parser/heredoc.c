@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 13:58:02 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:48:08 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,11 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 
 	delimiter = get_delimiter(*token);
 	buffer = ft_strdup("");
-	input = readline("> ");
-	while (input != NULL)
+	while (1)
 	{
+		input = readline("> ");
+		if (!input)
+			return ;
 		if (ft_strcmp(input, delimiter))
 			break ;
 		if (!check_delimiter_type(*token) && check_is_joined(*token))
@@ -101,7 +103,6 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 		buffer = ft_strjoin(buffer, input);
 		buffer = ft_strjoin(buffer, "\n");
 		free(input);
-		input = readline("> ");
 	}
 	ft_putstr_fd(buffer, fd);
 	free(buffer);

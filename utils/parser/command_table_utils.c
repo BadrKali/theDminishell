@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 14:10:14 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 14:24:50 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 18:36:41 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,37 +37,37 @@ static void	free_tab(char **tab)
 
 //! Duplicate
 
-int	ft_memcmp(const void *str1, const void *str2, size_t n)
-{
-        size_t			i;
-        unsigned char	*s1;
-        unsigned char	*s2;
+// int	ft_memcmp(const void *str1, const void *str2, size_t n)
+// {
+//         size_t			i;
+//         unsigned char	*s1;
+//         unsigned char	*s2;
 
-        s1 = (unsigned char *)str1;
-        s2 = (unsigned char *)str2;
-        i = 0;
-        while (i <= n)
-        {
-                if (s1[i] != s2[i])
-                    return(1);
-                i ++;
-        }
-        return (0);
-}
+//         s1 = (unsigned char *)str1;
+//         s2 = (unsigned char *)str2;
+//         i = 0;
+//         while (i <= n)
+//         {
+//                 if (s1[i] != s2[i])
+//                     return(1);
+//                 i ++;
+//         }
+//         return (0);
+// }
 
-char	*get_env_value(t_envp *env,char *name)
-{
-    t_envp *tmp;
+// char	*get_env_value(t_envp *env,char *name)
+// {
+//     t_envp *tmp;
 
-    tmp = env;
-    while(tmp != NULL)
-    {
-        if(ft_memcmp(name,tmp->envp_name,ft_strlen(name)) == 0)
-            return(tmp->envp_value);
-        tmp = tmp->next;
-    }
-    return(NULL);
-}
+//     tmp = env;
+//     while(tmp != NULL)
+//     {
+//         if(ft_memcmp(name,tmp->envp_name,ft_strlen(name)) == 0)
+//             return(tmp->envp_value);
+//         tmp = tmp->next;
+//     }
+//     return(NULL);
+// }
 
 //! ^ to remove later
 

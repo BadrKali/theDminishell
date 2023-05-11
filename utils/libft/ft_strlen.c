@@ -6,13 +6,13 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 18:27:21 by abahsine          #+#    #+#             */
-/*   Updated: 2023/03/10 17:26:34 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/09 18:35:07 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-size_t	ft_strlen(char *s)
+size_t	ft_strlen(const char *s)
 {
 	int	i;
 

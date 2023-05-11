@@ -6,13 +6,13 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:21:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 14:34:21 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/10 11:55:16 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static char	*get_variable_name(char *env)
+char	*get_variable_name(char *env)
 {
 	char	*env_name;
 	int		i;
@@ -20,14 +20,14 @@ static char	*get_variable_name(char *env)
 
 	i = 0;
 	j = 0;
-	while (env[i] && env[i] != '=')
+	while (env[i] && env[i] != '=' && env[i] != '+')
 		i++;
 	env_name = malloc((i + 2) * sizeof(char));
 	if (!env_name)
 		return (NULL);
 	env_name[0] = '$';
 	i = 1;
-	while (env[j] && env[j] != '=')
+	while (env[j] && env[j] != '=' && env[j] != '+')
 	{
 		env_name[i] = env[j++];
 		i++;
@@ -48,6 +48,41 @@ char	*remove_name(char *envp_value)
 	return (ft_substr(envp_value, i, ft_strlen(envp_value) - i));
 }
 
+char *envp_name(t_envp *env)
+{
+	int i;
+	int j;
+	char *name;
+
+	name = malloc(sizeof(char) * ft_strlen(env->envp_name) + 1);
+	if(name == NULL)
+		return(NULL);
+	i = 1;
+	j = 0;
+	while(env->envp_name[i] != '\0')
+	{
+		name[j] = env->envp_name[i];
+		i++;
+		j++;
+	}
+	name[j] = '=';
+	j++;
+	name[j] = '\0';
+	return(name);
+}
+
+void fill_the_name(t_envp **envp)
+{
+	t_envp *tmp;
+
+	tmp = *envp;
+	while(tmp)
+	{
+		tmp->env_pre = envp_name(tmp);
+		tmp = tmp->next;
+	}
+}
+
 void	fill_env_pointer(t_envp **envp, char *env[])
 {
 	int	i;
@@ -59,4 +94,5 @@ void	fill_env_pointer(t_envp **envp, char *env[])
 				get_variable_name(env[i])));
 		i++;
 	}
+	fill_the_name(envp);
 }

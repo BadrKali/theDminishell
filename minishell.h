@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 15:45:00 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/11 12:04:25 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,26 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+#include <signal.h>
 
 # include <readline/history.h>
 # include <readline/readline.h>
-
+# include<sys/wait.h>
+# include<sys/types.h>
+# include<signal.h>
+# include<errno.h>
+# include <dirent.h>
 #define ERR "minishell: syntax error near unexpected token `|'\n"
+
+#define ENV_APPEND 1000
+#define ENV_UPDATE 2000
+#define NEW_ENV 3000
+#define FORK 90
+
+typedef struct s_globale {
+	int exit_code;
+	
+} t_globale ;
 
 typedef struct s_tokens {
 	int				type;
@@ -34,6 +49,7 @@ typedef struct s_tokens {
 typedef struct s_envp {
 	char			*envp_name;
 	char			*envp_value;
+	char			*env_pre;
 	struct s_envp	*next;
 	struct s_envp	*prev;
 }	t_envp;
@@ -43,6 +59,7 @@ typedef struct s_cmds {
 	char			**args;
 	int				std_in;
 	int				std_out;
+	int				pid;
 	struct s_cmds	*next;
 	struct s_cmds	*prev;
 }	t_cmds;
@@ -66,7 +83,7 @@ LIBFT FUNCTIONS
 
 char		*ft_strdup(char *s1);
 char		*ft_substr(char *s, unsigned int start, size_t len);
-size_t		ft_strlen(char *s);
+size_t		ft_strlen(const char *s);
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);
 int			ft_strcmp(char *s1, char *s2);
@@ -84,6 +101,8 @@ void		*free_2d_arrays(char **res);
 void		ft_lstadd_back_envp(t_envp **lst, t_envp *new);
 t_envp		*ft_lstnew_envp(char *value, char *name);
 void		fill_env_pointer(t_envp **envp, char *env[]);
+int			ft_memcmp(const void *str1, const void *str2, size_t n);
+int 		ft_strchr(const char *str, int c);
 
 /******************
 TOKENIZER FUNCTIONS
@@ -162,5 +181,35 @@ OTHER FUNCTIONS
 void		close_open_fds(t_cmds *cmd);
 void		delete_tmp_files(t_tokens *token);
 void		mini_cleaner(t_tokens **token, t_cmds **cmd, char *input);
+
+t_globale globale;
+
+int builtins_handler(t_cmds *cmd,t_envp **envp);
+int ft_cd(t_cmds *cmd,t_envp **env);
+int ft_echo(t_cmds *cmd);
+int ft_env(t_envp *env);
+int ft_export(t_cmds *cmd,t_envp **env);
+int ft_unset(t_envp **env,t_cmds *cmd);
+int ft_pwd(t_cmds *cmd,t_envp **env);
+int ft_exit(t_cmds *cmd,t_envp **env);
+
+
+char *get_env_value(t_envp *env,char *name);
+char	*get_variable_name(char *env);
+void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
+char *envp_name(t_envp *env);
+t_envp	*ft_lstnew_envp(char *value, char *name);
+char	*remove_name(char *envp_value);
+char *envp_name(t_envp *env);
+t_envp *check_env_exist(char *args,t_envp *env);
+int builtins_check(char *name);
+
+void exec_cmd(t_cmds **cmd,t_envp **envp);
+void simple_exec_handler(t_cmds *cmd, t_envp **env);
+void single_cmd_handler(t_cmds *cmd ,t_envp **env);
+void multi_command_exec(t_cmds *cmd,t_envp **env,int cmd_num);
+void print_string(char *str);
+int dup_redirections(t_cmds *cmd);
+int check_handler(t_cmds *cmd);
 
 #endif

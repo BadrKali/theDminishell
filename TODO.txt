@@ -11,3 +11,4 @@ $var with space -> leaks
 $?hj -> maybe wrokng in echo
 "  "
 "$var1"
+
