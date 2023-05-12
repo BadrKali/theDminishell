@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:07:26 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:44:01 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:38:38 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ char	*get_command(t_tokens *token)
 	{
 		if (tmp->type == WORD || tmp->type == QUOTES
 			|| tmp->type == S_QUOTES || tmp->type == VAR)
-			return (tmp->value);
+			if ((tmp->type == VAR && ft_strlen(tmp->value))
+				|| tmp->type == WORD || tmp->type == QUOTES
+				|| tmp->type == S_QUOTES)
+				return (tmp->value);
 		tmp = tmp->next;
 	}
 	return (NULL);
@@ -64,7 +67,13 @@ char	**get_arguments(t_tokens *token, t_envp *envp, char *cmd)
 		skip_redirections(&token);
 		if (token && (token->type == WORD || token->type == QUOTES
 				|| token->type == S_QUOTES || token->type == VAR))
-			get_arguments_two(&token, args, &i, &is_cmd);
+		{
+			if ((token->type == VAR && ft_strlen(token->value)) || token->type == WORD || token->type == QUOTES
+				|| token->type == S_QUOTES)
+				get_arguments_two(&token, args, &i, &is_cmd);
+			else
+				token = token->next;
+		}
 		else if ((token && token->type != OR_OPERATOR
 				&& token->type != IR_OPERATOR
 				&& token->type != HEREDOC_OPERATOR

@@ -5,7 +5,6 @@ void error_msg(int num)
 {
     if(num == FORK)
         ft_putstr_fd("FORK FAILED\n",2);
-    exit(EXIT_FAILURE);
 }
 
 void close_fds(int index,int cmd_num,int ends[][2])
@@ -61,9 +60,15 @@ void multi_command_exec(t_cmds *cmd,t_envp **env,int cmd_num)
     i = 0;
     while(cmd != NULL)
     {
+        // if(cmd->cmd == NULL && cmd->next)
+        //     cmd = cmd->next;
         cmd->pid = fork();
         if(cmd->pid < 0)
+        {
             error_msg(FORK);
+            return;
+        }
+            
         if(cmd->pid == 0)
         {
             dup_fds(cmd,ends,i,cmd_num);

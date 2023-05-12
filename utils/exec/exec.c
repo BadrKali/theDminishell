@@ -25,7 +25,7 @@ void exec_cmd(t_cmds **cmd,t_envp **envp)
     i = 0;
     //signal(SIGINT,SIG_DFL)
     globale.cmd = 1;
-    if(ft_memcmp("./minishell",tmp->cmd,ft_strlen("./minishell")) == 0)
+    if(tmp->cmd && ft_memcmp("./minishell",tmp->cmd,ft_strlen("./minishell")) == 0)
     {
         tmp_env = check_env_exist("SHLVL",*envp);
         tmp_env->envp_value = ft_itoa(ft_atoi(tmp_env->envp_value) + 1);

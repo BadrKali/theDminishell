@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:54:09 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:14:44 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:06:24 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	check_syntax_before_pipe(t_tokens *token)
 
 int	check_syntax_after_pipe(t_tokens *token)
 {
-	if (!token->next || (token->next->type == T_SPACE && !token->next->next)
+	if ((!token->next && token->is_deleted != 1) || (token->next && token->next->type == T_SPACE && !token->next->next && token->is_deleted != 1)
 		|| (token->next && token->next->type == PIPE) || (token->next
 			&& token->next->type == T_SPACE && token->next->next
 			&& token->next->next->type == PIPE))
@@ -45,8 +45,7 @@ int	check_redirections_syntax(t_tokens *token)
 				|| token->next->type == IR_OPERATOR
 				|| token->next->type == HEREDOC_OPERATOR
 				|| token->next->type == APPEND_OPERATOR)
-				return (ft_putstr_fd("minishell: syntax error near unexpected \
-				token `newline'\n", 2), 1);
+				return (ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2), 1);
 			else if (token->next && token->next->type == T_SPACE)
 			{
 				token = token->next;
@@ -54,8 +53,7 @@ int	check_redirections_syntax(t_tokens *token)
 					|| token->next->type == IR_OPERATOR
 					|| token->next->type == HEREDOC_OPERATOR
 					|| token->next->type == APPEND_OPERATOR)
-					return (ft_putstr_fd("minishell: syntax error near \
-					unexpected token `newline'\n", 2), 1);
+					return (ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2), 1);
 			}
 		}
 		token = token->next;

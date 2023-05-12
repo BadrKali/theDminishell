@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:05:32 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 14:09:44 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 		{
 			if (globale.heredoc == 1)
 				dup2(globale.heredoc_tmp, 0);
-			return ;
+			break;
 		}
 		if (ft_strcmp(input, delimiter))
 			break ;

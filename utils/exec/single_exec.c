@@ -120,7 +120,8 @@ int check_handler(t_cmds *cmd)
 
 void signal_handler_exec(int num)
 {
-    printf("\n");
+    if(num == SIGINT)
+        printf("\n");
 	//rl_on_new_line();
     //globale.cmd = -1;
 }

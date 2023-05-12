@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/11 18:02:21 by bel-kala          #+#    #+#             */
-/*   Updated: 2023/05/11 18:02:22 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/12 18:32:37 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ int export_print(t_envp **env)
         {
             ft_putstr_fd("declare -x ",1);
             ft_putstr_fd(tmp->env_pre,1);
+            ft_putstr_fd("\"", 1);
             ft_putstr_fd(tmp->envp_value,1);
+            ft_putstr_fd("\"", 1);
             write(1,"\n",1);
         }
         tmp = tmp->next;

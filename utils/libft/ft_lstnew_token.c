@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:52:41 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 15:35:11 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:38:40 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_tokens	*ft_lstnew_token(char *value, int type)
 	token->value = value;
 	token->type = type;
 	token->is_joined = -1;
+	token->is_deleted = -1;
 	token->next = NULL;
 	token->prev = NULL;
 	return (token);

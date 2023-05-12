@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:00:29 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:38:43 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_tokens {
 	int				type;
 	char			*value;
 	int				is_joined;
+	int				is_deleted;
 	struct s_tokens	*next;
 	struct s_tokens	*prev;
 }	t_tokens;

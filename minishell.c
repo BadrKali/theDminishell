@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:14:08 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:46:24 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 18:15:28 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,11 @@ int	main(int argc, char *argv[], char *env[])
 			exit(0);
 		if (!input_tokenizer(&token, envp, input) && !syntax_checker(token))
 		{
-			add_history(input);
+			if (input[0])
+				add_history(input);
 			delete_two_exec_spaces(&token);
 			command_table(token, &cmd, envp);
-			// t_cmds *tmp = cmd;
+			t_cmds *tmp = cmd;
 			// while (tmp)
 			// {
 			// 	printf("cmd: [%s]\n", tmp->cmd);
@@ -68,7 +69,7 @@ int	main(int argc, char *argv[], char *env[])
 			// 	printf("std_out: %d\n", tmp->std_out);
 			// 	tmp = tmp->next;
 			// }
-			if (cmd && cmd->cmd && globale.heredoc != 1)
+			if (cmd && globale.heredoc != 1)
 				exec_cmd(&cmd, &envp);
 			mini_cleaner(&token, &cmd, input);
 			globale.heredoc = -1;
