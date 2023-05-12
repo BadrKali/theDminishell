@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/11 18:02:34 by bel-kala          #+#    #+#             */
+/*   Updated: 2023/05/11 18:02:35 by bel-kala         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include"../../minishell.h"
 
 void	ft_putchar(int fd, char c)
@@ -43,24 +56,7 @@ void print_string(char *str)
 
 
 
-void print_string_echo(char *str)
-{
-    int i;
 
-    i = 0;
-    while(str[i] != '\0')
-    {
-        if(str[i] == '$' && str[i + 1] == '?')
-        {
-            ft_putnbr_fd(globale.exit_code,1);
-            i = i + 2;
-        }
-        if(str[i] == '\0')
-            break;
-        write(1,&str[i],1);
-        i++; 
-    }
-}
 
 int echo_flag(char *str)
 {
@@ -119,10 +115,7 @@ int ft_echo(t_cmds *cmd)
     i = option + 1;
     while(cmd->args[i] != NULL)
     {
-        if(ft_memcmp("$?",cmd->args[i],ft_strlen("$?")) == 0)
-            ft_putnbr_fd(globale.exit_code,1);
-        else
-            print_string_echo(cmd->args[i]);
+        print_string(cmd->args[i]);
         if(cmd->args[i + 1] != NULL)
             write(1," ",1);
         i++;

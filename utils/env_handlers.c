@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_handlers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:21:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/10 11:55:16 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:00:51 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void fill_the_name(t_envp **envp)
 	while(tmp)
 	{
 		tmp->env_pre = envp_name(tmp);
+		tmp->flag = 0;
 		tmp = tmp->next;
 	}
 }

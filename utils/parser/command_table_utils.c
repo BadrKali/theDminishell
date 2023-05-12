@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 14:10:14 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 18:36:41 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 12:45:20 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,15 @@ char	*get_path(t_envp *envp, char *cmd)
 	int		i;
 
 	i = 0;
-	path = get_env_value(envp, "$PATH");
-	if (!path)
-		return (NULL);
-	tab = ft_split(path, ':');
+	
 	is_forwardslash = is_there_forwardslash(cmd);
-	while (tab[i] && !is_forwardslash && !ft_strcmp(cmd, "export")
+	path = get_env_value(envp, "$PATH");
+	if (!path && !is_forwardslash)
+		return (NULL);
+	else if (is_forwardslash)
+		return (ft_strdup(cmd));
+	tab = ft_split(path, ':');
+	while (tab[i] && !ft_strcmp(cmd, "export")
 		&& ft_strlen(cmd) && !ft_strcmp("..", cmd)
 		&& !ft_strcmp(".", cmd))
 	{

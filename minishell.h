@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/11 12:04:25 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 12:00:29 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -35,6 +36,9 @@
 
 typedef struct s_globale {
 	int exit_code;
+	int	heredoc;
+	int	heredoc_tmp;
+	int cmd;
 	
 } t_globale ;
 
@@ -50,6 +54,7 @@ typedef struct s_envp {
 	char			*envp_name;
 	char			*envp_value;
 	char			*env_pre;
+	int				flag;
 	struct s_envp	*next;
 	struct s_envp	*prev;
 }	t_envp;
@@ -103,6 +108,7 @@ t_envp		*ft_lstnew_envp(char *value, char *name);
 void		fill_env_pointer(t_envp **envp, char *env[]);
 int			ft_memcmp(const void *str1, const void *str2, size_t n);
 int 		ft_strchr(const char *str, int c);
+int			ft_atoi(const char *str);
 
 /******************
 TOKENIZER FUNCTIONS
@@ -151,6 +157,7 @@ char		*merge_args(t_tokens **token);
 int			get_arguments_len(t_tokens *token);
 int			*handle_redirections_for_cmd(t_tokens **token, t_envp *envp);
 void		skip_redirections(t_tokens **token);
+void	signal_handler(int sig);
 
 /*****************
 EXPANDER FUNCTIONS
@@ -211,5 +218,12 @@ void multi_command_exec(t_cmds *cmd,t_envp **env,int cmd_num);
 void print_string(char *str);
 int dup_redirections(t_cmds *cmd);
 int check_handler(t_cmds *cmd);
+
+t_envp *check_env_exist(char *args,t_envp *env);
+int syntax_check(char *str);
+char	*get_str(const char *str, int c);
+int ft_check_type(char *arg,t_envp *env);
+int export_print(t_envp **env);
+void signal_handler_exec(int num);
 
 #endif

@@ -19,9 +19,17 @@ void exec_cmd(t_cmds **cmd,t_envp **envp)
     int cmd_num;
     int i;
     int status;
+    t_envp *tmp_env;
     
     tmp = *cmd;
     i = 0;
+    //signal(SIGINT,SIG_DFL)
+    globale.cmd = 1;
+    if(ft_memcmp("./minishell",tmp->cmd,ft_strlen("./minishell")) == 0)
+    {
+        tmp_env = check_env_exist("SHLVL",*envp);
+        tmp_env->envp_value = ft_itoa(ft_atoi(tmp_env->envp_value) + 1);
+    }
     if(len_liste(*cmd) == 1)
     {
         if(builtins_check(tmp->cmd) == 0)
@@ -41,7 +49,14 @@ void exec_cmd(t_cmds **cmd,t_envp **envp)
         }
         if(WIFEXITED(status))
             globale.exit_code = WEXITSTATUS(status);
+        if(WIFSIGNALED(status))
+        {
+            int signum = WTERMSIG(status);
+            globale.exit_code = 130;
+            signal_handler_exec(signum);
+        }
     }
+    globale.cmd = -1;
 }
 
 

@@ -6,7 +6,7 @@
 #    By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 13:13:34 by abahsine          #+#    #+#              #
-#    Updated: 2023/05/10 16:18:44 by abahsine         ###   ########.fr        #
+#    Updated: 2023/05/12 12:00:09 by abahsine         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,8 @@ utils/builtins/builtins_handler.c \
 utils/exec/exec.c \
 utils/exec/single_exec.c \
 utils/exec/multi_exec.c \
+utils/builtins/builtins_tools.c \
+
 
 OFILES = ${CFILES:.c=.o}
 

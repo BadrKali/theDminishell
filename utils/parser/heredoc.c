@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/10 16:48:08 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 12:05:32 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,17 @@ static char	*handle_heredoc_variables(char *input, t_envp *envp)
 	return (input);
 }
 
+void	heredoc_signal_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		rl_replace_line("", 1);
+		globale.heredoc = 1;
+		globale.heredoc_tmp = dup(0);
+		close(0);
+	}
+}
+
 static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 {
 	char	*input;
@@ -91,11 +102,16 @@ static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 
 	delimiter = get_delimiter(*token);
 	buffer = ft_strdup("");
+	signal(SIGINT, heredoc_signal_handler);
 	while (1)
 	{
 		input = readline("> ");
 		if (!input)
+		{
+			if (globale.heredoc == 1)
+				dup2(globale.heredoc_tmp, 0);
 			return ;
+		}
 		if (ft_strcmp(input, delimiter))
 			break ;
 		if (!check_delimiter_type(*token) && check_is_joined(*token))

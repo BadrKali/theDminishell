@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/11 18:02:27 by bel-kala          #+#    #+#             */
+/*   Updated: 2023/05/12 12:49:31 by abahsine         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+
 #include"../../minishell.h"
 
 int    ft_memcmp(const void *str1, const void *str2, size_t n)
@@ -50,18 +63,20 @@ int update_env(char *name,char *value,t_envp *env)
     return(EXIT_FAILURE);
 }
 
-int ft_cd_home(t_envp **env)
+int ft_cd_home(t_envp **env,t_cmds *cmd)
 {
     char *home;
     t_envp *tmp;
-
-    home = get_env_value(*env,"$HOME");
+    
+    if(cmd->args[1] == NULL)
+        home = get_env_value(*env,"$HOME");
+    // if(cmd->args[1][0] == '-' && cmd->args[1][1] == '\0')
+    //     home = ft_strdup(get_env_value(*env,"$OLDPWD"));
     if(chdir(home) == -1)
     {
         ft_putstr_fd("Minishell: cd: HOME not set\n",2);
         return(EXIT_FAILURE);
     }
-    
     update_env("$OLDPWD",get_env_value(*env,"$PWD"),*env);
     update_env("$PWD",home,*env);
     return(EXIT_SUCCESS);
@@ -75,13 +90,7 @@ int ft_cd(t_cmds *cmd,t_envp **env)
 
     buf = NULL;
     if(cmd->args[1] == NULL)
-        return(ft_cd_home(env));
-    if(cmd->args[2] != NULL)
-    {
-        ft_putstr_fd("Minishell: cd: ",2);
-        ft_putstr_fd(": too many arguments\n",2);
-        return(EXIT_FAILURE);
-    }
+        return(ft_cd_home(env,cmd));
     else if(cmd->args[1] != NULL)
     {
         if(chdir(cmd->args[1]) == -1)

@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:14:08 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/11 15:53:44 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/12 12:46:24 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 
 void	signal_handler(int sig)
 {
-	if (sig == SIGINT)
+	if(sig == SIGINT && globale.cmd != 1 && globale.heredoc != 1)
 	{
 		printf("\n");
-		rl_replace_line("", 1);
 		rl_on_new_line();
+		rl_replace_line("", 1);
 		rl_redisplay();
-		//! exit status should be 130
 	}
 }
 
@@ -39,12 +38,14 @@ int	main(int argc, char *argv[], char *env[])
 	token = NULL;
 	envp = NULL;
 	cmd = NULL;
+	globale.heredoc = -1;
+	globale.cmd = -1;
 	rl_catch_signals = 0;
 	fill_env_pointer(&envp, env);
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, signal_handler);
 		input = readline("> minishell ");
 		if (!input)
 			exit(0);
@@ -67,9 +68,16 @@ int	main(int argc, char *argv[], char *env[])
 			// 	printf("std_out: %d\n", tmp->std_out);
 			// 	tmp = tmp->next;
 			// }
-			if (cmd)
+			if (cmd && cmd->cmd && globale.heredoc != 1)
 				exec_cmd(&cmd, &envp);
 			mini_cleaner(&token, &cmd, input);
+			globale.heredoc = -1;
 		}
+		
 	}
 }
+
+
+
+//handle CTRl + D when minishell get run from another minishell
+//make a signal handler that checks if you are in a nother minishell  

@@ -61,12 +61,16 @@ int dup_redirections(t_cmds *cmd) // need to close the open fd's and staff in ca
     return(EXIT_SUCCESS);
 }
 
+void signal_exec()
+{
+    signal(SIGINT,SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
+}
+
 void single_cmd_handler(t_cmds *cmd ,t_envp **env)
 {
     char **tmp_env;
 
-    // signal(SIGQUIT, SIG_IGN);
-    signal(SIGINT, SIG_DFL);
     tmp_env = env_joiner(*env); // protection here
     if(dup_redirections(cmd) == 1)
     {
@@ -75,6 +79,7 @@ void single_cmd_handler(t_cmds *cmd ,t_envp **env)
     }
     if(builtins_check(cmd->cmd) == 0)
         exit(builtins_handler(cmd,env));
+    signal_exec();
     if(execve(cmd->args[0],cmd->args,tmp_env) < 0)
     {
         ft_putstr_fd("Minishell: ",2),
@@ -102,14 +107,22 @@ int check_handler(t_cmds *cmd)
     {
         if(access(cmd->cmd,X_OK) != 0)
         {
-        ft_putstr_fd("Minishell: ",2);
-        ft_putstr_fd(cmd->cmd,2);
-        ft_putstr_fd(": Permission denied\n",2);
-        globale.exit_code = 126;
-        return(1);
+            ft_putstr_fd("Minishell: ",2);
+            ft_putstr_fd(cmd->cmd,2);
+            ft_putstr_fd(": Permission denied\n",2);
+            globale.exit_code = 126;
+            return(1);
         }
     }
     return(0);
+}
+
+
+void signal_handler_exec(int num)
+{
+    printf("\n");
+	//rl_on_new_line();
+    //globale.cmd = -1;
 }
 
 void simple_exec_handler(t_cmds *cmd, t_envp **env)
@@ -129,6 +142,7 @@ void simple_exec_handler(t_cmds *cmd, t_envp **env)
         ft_putstr_fd("FORK FAILED\n",2);
         //return(EXIT_FAILURE);
     }
+    //globale.cmd = 1;
     if(cmd->pid == 0)
         single_cmd_handler(cmd,env);
     if(cmd->pid > 0)
@@ -136,5 +150,12 @@ void simple_exec_handler(t_cmds *cmd, t_envp **env)
         waitpid(cmd->pid,&status,0);
         if(WIFEXITED(status))
             globale.exit_code = WEXITSTATUS(status);
+        if(WIFSIGNALED(status))
+        {
+            int signum = WTERMSIG(status);
+            globale.exit_code = 130;
+            signal_handler_exec(signum);
+        }
     }
+    //globale.cmd = -1;
 }
