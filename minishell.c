@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:14:08 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 18:15:28 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/14 13:21:24 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 void	signal_handler(int sig)
 {
-	if(sig == SIGINT && globale.cmd != 1 && globale.heredoc != 1)
+	if (sig == SIGINT && globale.cmd != 1 && globale.heredoc != 1)
 	{
 		printf("\n");
 		rl_on_new_line();
@@ -48,14 +48,18 @@ int	main(int argc, char *argv[], char *env[])
 		signal(SIGINT, signal_handler);
 		input = readline("> minishell ");
 		if (!input)
+		{
+			ft_putstr_fd("exit\n",2);
 			exit(0);
+		}
+			
 		if (!input_tokenizer(&token, envp, input) && !syntax_checker(token))
 		{
 			if (input[0])
 				add_history(input);
 			delete_two_exec_spaces(&token);
 			command_table(token, &cmd, envp);
-			t_cmds *tmp = cmd;
+			// t_cmds *tmp = cmd;
 			// while (tmp)
 			// {
 			// 	printf("cmd: [%s]\n", tmp->cmd);
@@ -71,14 +75,13 @@ int	main(int argc, char *argv[], char *env[])
 			// }
 			if (cmd && globale.heredoc != 1)
 				exec_cmd(&cmd, &envp);
-			mini_cleaner(&token, &cmd, input);
-			globale.heredoc = -1;
 		}
-		
+		mini_cleaner(&token, &cmd, input);
+		globale.heredoc = -1;
 	}
 }
 
-
-
 //handle CTRl + D when minishell get run from another minishell
-//make a signal handler that checks if you are in a nother minishell  
+//make a signal handler that checks if you are in a nother minishell
+
+//unset PWD whrn run env | grep OLDPWD dosent showed up 

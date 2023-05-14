@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/20 18:24:55 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/04 15:23:10 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:27:51 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	ft_isalpha(int c)
 		return (1);
 	return (0);
 }
-
 
 int	ft_atoi(const char *str)
 {

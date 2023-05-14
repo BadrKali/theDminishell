@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+         #
+#    By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 13:13:34 by abahsine          #+#    #+#              #
-#    Updated: 2023/05/12 12:00:09 by abahsine         ###   ########.fr        #
+#    Updated: 2023/05/14 14:54:03 by bel-kala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFLAGS = 
+CFLAGS = -fsanitize=address -g
 
 CFILES = minishell.c \
 utils/env_utils.c utils/env_handlers.c \
@@ -26,7 +26,7 @@ utils/tokenizer/token_handlers.c \
 utils/parser/syntax_analyzer.c utils/parser/command_table.c utils/parser/heredoc.c \
 utils/parser/heredoc_utils.c utils/parser/redirections_handlers.c \
 utils/parser/redirections_utils.c  utils/parser/command_table_utils_two.c \
-utils/parser/command_table_utils.c \
+utils/parser/command_table_utils.c utils/parser/heredoc_utils_two.c \
 utils/expander/expand_variables.c utils/expander/variables_in_quotes_handler.c \
 utils/expander/variables_handler.c utils/expander/variables_in_quotes_utils.c \
 utils/leaks_removers.c utils/minishell_utils.c \
@@ -42,6 +42,10 @@ utils/exec/exec.c \
 utils/exec/single_exec.c \
 utils/exec/multi_exec.c \
 utils/builtins/builtins_tools.c \
+utils/libft/ft_putnbr.c \
+utils/libft/ft_memcmp.c \
+utils/libft/ft_strchr.c \
+utils/exec/exec_tools.c \
 
 
 OFILES = ${CFILES:.c=.o}
@@ -49,12 +53,10 @@ OFILES = ${CFILES:.c=.o}
 all: ${NAME}
 
 ${NAME}: ${OFILES} minishell.h
-	${CC} ${CFLAGS} ${OFILES} -o ${NAME} -L/Users/abahsine/homebrew/opt/readline/lib -lreadline
-	@clear
+	${CC} ${CFLAGS} ${OFILES} -o ${NAME} -L/Users/bel-kala/homebrew/opt/readline/lib -lreadline
 
 %.o: %.c
-	${CC} ${CFLAGS} -I/Users/abahsine/homebrew/opt/readline/include -c $< -o $@
-	@clear
+	${CC} ${CFLAGS} -I/Users/bel-kala/homebrew/opt/readline/include -c $< -o $@
 
 clean:
 	rm -f ${OFILES}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:21:35 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 14:09:44 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/14 15:08:49 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static char	*remove_false_vars_heredoc(char *value, char *var)
 	return (free(value), free(second_half), first_half);
 }
 
-static char	*handle_heredoc_variables(char *input, t_envp *envp)
+char	*handle_heredoc_variables(char *input, t_envp *envp)
 {
 	t_envp	*tmp;
 	char	**var;
@@ -92,38 +92,6 @@ void	heredoc_signal_handler(int sig)
 		globale.heredoc_tmp = dup(0);
 		close(0);
 	}
-}
-
-static void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
-{
-	char	*input;
-	char	*buffer;
-	char	*delimiter;
-
-	delimiter = get_delimiter(*token);
-	buffer = ft_strdup("");
-	signal(SIGINT, heredoc_signal_handler);
-	while (1)
-	{
-		input = readline("> ");
-		if (!input)
-		{
-			if (globale.heredoc == 1)
-				dup2(globale.heredoc_tmp, 0);
-			break;
-		}
-		if (ft_strcmp(input, delimiter))
-			break ;
-		if (!check_delimiter_type(*token) && check_is_joined(*token))
-			input = handle_heredoc_variables(input, envp);
-		buffer = ft_strjoin(buffer, input);
-		buffer = ft_strjoin(buffer, "\n");
-		free(input);
-	}
-	ft_putstr_fd(buffer, fd);
-	free(buffer);
-	free(input);
-	close(fd);
 }
 
 int	handle_heredoc(t_tokens **token, t_envp *envp, int file_index)

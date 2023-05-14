@@ -34,16 +34,17 @@ char **env_joiner(t_envp *env)
 
     i = 0;
     len = env_len(env);
-    str = malloc(sizeof(char *) * len + 1);
+    str = malloc(sizeof(char *) * (len + 1));
     if(str == NULL)
         return(NULL);
+    str[len] = 0;
     while(env != NULL)
     {
         str[i] = ft_strjoin(env->env_pre,env->envp_value);
 		env = env->next;
         i++;
     }
-    str[i] = NULL;
+   //str[i] = NULL;
     return(str);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_handlers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:21:16 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/11 16:00:51 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:29:28 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,18 @@ char	*remove_name(char *envp_value)
 	return (ft_substr(envp_value, i, ft_strlen(envp_value) - i));
 }
 
-char *envp_name(t_envp *env)
+char	*envp_name(t_envp *env)
 {
-	int i;
-	int j;
-	char *name;
+	int		i;
+	int		j;
+	char	*name;
 
 	name = malloc(sizeof(char) * ft_strlen(env->envp_name) + 1);
-	if(name == NULL)
-		return(NULL);
+	if (name == NULL)
+		return (NULL);
 	i = 1;
 	j = 0;
-	while(env->envp_name[i] != '\0')
+	while (env->envp_name[i] != '\0')
 	{
 		name[j] = env->envp_name[i];
 		i++;
@@ -68,15 +68,15 @@ char *envp_name(t_envp *env)
 	name[j] = '=';
 	j++;
 	name[j] = '\0';
-	return(name);
+	return (name);
 }
 
-void fill_the_name(t_envp **envp)
+void	fill_the_name(t_envp **envp)
 {
-	t_envp *tmp;
+	t_envp	*tmp;
 
 	tmp = *envp;
-	while(tmp)
+	while (tmp)
 	{
 		tmp->env_pre = envp_name(tmp);
 		tmp->flag = 0;

@@ -14,18 +14,17 @@
 #include"../../minishell.h"
 
 
-void print_envp(t_envp *env)
+int ft_env(t_envp *env)
 {
 	while(env != NULL)
 	{
 		if(env->flag == 0)
-			printf("%s%s\n",env->env_pre,env->envp_value);
+		{
+			ft_putstr_fd(env->env_pre,1);
+			ft_putstr_fd(env->envp_value,1);
+			ft_putstr_fd("\n",1);
+		}
 		env = env->next;
 	}
-}
-
-int ft_env(t_envp *env)
-{
-    print_envp(env);
-    return(EXIT_SUCCESS);
+	return(EXIT_SUCCESS);
 }

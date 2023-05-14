@@ -14,22 +14,7 @@
 #include"../../minishell.h"
 
 
-int ft_strchr(const char *str, int c)
-{
-	size_t	i;
-	size_t	len;
-
-	i = 0;
-	len = ft_strlen(str);
-	while (i <= len)
-	{
-		if (str[i] == (char )c)
-			return (i);
-		i ++;
-	}
-	return (0);
-}
-
+//i added here if(tmp->envp_value != NULL)
 int export_print(t_envp **env)
 {
     char *str;
@@ -38,13 +23,15 @@ int export_print(t_envp **env)
     tmp = *env;
     while(tmp)
     {
-        if(tmp->flag == 1 || tmp->flag == 0)
+        if((tmp->flag == 1 || tmp->flag == 0))
         {
             ft_putstr_fd("declare -x ",1);
             ft_putstr_fd(tmp->env_pre,1);
-            ft_putstr_fd("\"", 1);
+            if(tmp->envp_value != NULL)
+                ft_putstr_fd("\"", 1);
             ft_putstr_fd(tmp->envp_value,1);
-            ft_putstr_fd("\"", 1);
+            if(tmp->envp_value != NULL)
+                ft_putstr_fd("\"", 1);
             write(1,"\n",1);
         }
         tmp = tmp->next;
@@ -122,10 +109,13 @@ t_envp *check_env_exist(char *args,t_envp *env)
     while(env != NULL)
     {
         if(ft_memcmp(arg_name,env->envp_name,ft_strlen(arg_name)) == 0)
+        {
+            free(arg_name);
             return(env);
-            
+        }
         env = env->next;
     }
+    free(arg_name);
     return(NULL);
     //memcmp i <= n check it 
 }

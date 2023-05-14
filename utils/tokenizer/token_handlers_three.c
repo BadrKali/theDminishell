@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 12:37:04 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 16:25:41 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:16:38 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,11 @@ int	find_space(char *value)
 		i++;
 	}
 	return (0);
+}
+
+void	handle_exit_variable(t_tokens **token, int *end)
+{
+	ft_lstadd_back_token(token, ft_lstnew_token(ft_itoa(globale.exit_code),
+			VAR));
+	(*end)++;
 }

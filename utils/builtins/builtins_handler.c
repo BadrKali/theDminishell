@@ -6,17 +6,19 @@
 /*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/11 18:02:15 by bel-kala          #+#    #+#             */
-/*   Updated: 2023/05/11 18:02:16 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/14 11:04:08 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include"../../minishell.h"
 
+
 int builtins_check(char *name)
 {
     char **builtins;
     int i;
+
     if(name == NULL)
         return(1);
     builtins = ft_split("echo cd pwd export unset env exit",' ');
@@ -24,16 +26,19 @@ int builtins_check(char *name)
     while(builtins[i] != NULL)
     {
         if(ft_memcmp(name,builtins[i],ft_strlen(name)) == 0)
-            return(0);
+        {
+            free_2d_arrays(builtins);
+            return(0);   
+        }
         i++;
     }
     free_2d_arrays(builtins);
     return(1);
 }
 
-int builtins_handler(t_cmds *cmd,t_envp **envp)
+
+int builtins_redirections(t_cmds *cmd)
 {
-    int result;
     int save;
 
     if(cmd->std_in < 0)
@@ -47,7 +52,15 @@ int builtins_handler(t_cmds *cmd,t_envp **envp)
         dup2(cmd->std_out,STDOUT_FILENO);
         close(cmd->std_out);
     }
+    return(save);
+}
 
+int builtins_handler(t_cmds *cmd,t_envp **envp)
+{
+    int result;
+    int save;
+
+    save = builtins_redirections(cmd);
     if(ft_memcmp(cmd->cmd,"echo",ft_strlen("echo")) == 0)
         result = ft_echo(cmd);
     else if(ft_memcmp(cmd->cmd,"cd",ft_strlen("cd")) == 0)
@@ -63,6 +76,9 @@ int builtins_handler(t_cmds *cmd,t_envp **envp)
     else if(ft_memcmp(cmd->cmd,"exit",ft_strlen("exit")) == 0)
         result = ft_exit(cmd,envp);
     if(cmd->std_out != 1)
+    {
         dup2(save,STDOUT_FILENO);
+        close(save);   
+    }
     return(result);
 }

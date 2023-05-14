@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 21:07:26 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 17:38:38 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:23:16 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,7 @@ char	**get_arguments(t_tokens *token, t_envp *envp, char *cmd)
 		skip_redirections(&token);
 		if (token && (token->type == WORD || token->type == QUOTES
 				|| token->type == S_QUOTES || token->type == VAR))
-		{
-			if ((token->type == VAR && ft_strlen(token->value)) || token->type == WORD || token->type == QUOTES
-				|| token->type == S_QUOTES)
-				get_arguments_two(&token, args, &i, &is_cmd);
-			else
-				token = token->next;
-		}
+			handle_argument(&token, args, &i, &is_cmd);
 		else if ((token && token->type != OR_OPERATOR
 				&& token->type != IR_OPERATOR
 				&& token->type != HEREDOC_OPERATOR

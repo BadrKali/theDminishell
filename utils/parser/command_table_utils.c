@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 14:10:14 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 12:45:20 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:48:22 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,41 +35,15 @@ static void	free_tab(char **tab)
 		free(tab[i++]);
 }
 
-//! Duplicate
-
-// int	ft_memcmp(const void *str1, const void *str2, size_t n)
-// {
-//         size_t			i;
-//         unsigned char	*s1;
-//         unsigned char	*s2;
-
-//         s1 = (unsigned char *)str1;
-//         s2 = (unsigned char *)str2;
-//         i = 0;
-//         while (i <= n)
-//         {
-//                 if (s1[i] != s2[i])
-//                     return(1);
-//                 i ++;
-//         }
-//         return (0);
-// }
-
-// char	*get_env_value(t_envp *env,char *name)
-// {
-//     t_envp *tmp;
-
-//     tmp = env;
-//     while(tmp != NULL)
-//     {
-//         if(ft_memcmp(name,tmp->envp_name,ft_strlen(name)) == 0)
-//             return(tmp->envp_value);
-//         tmp = tmp->next;
-//     }
-//     return(NULL);
-// }
-
-//! ^ to remove later
+void	handle_argument(t_tokens **token, char **args, int *i, int *is_cmd)
+{
+	if (((*token)->type == VAR && ft_strlen((*token)->value))
+		|| (*token)->type == WORD || (*token)->type == QUOTES
+		|| (*token)->type == S_QUOTES)
+		get_arguments_two(token, args, i, is_cmd);
+	else
+		*token = (*token)->next;
+}
 
 char	*get_path(t_envp *envp, char *cmd)
 {
@@ -79,7 +53,6 @@ char	*get_path(t_envp *envp, char *cmd)
 	int		i;
 
 	i = 0;
-	
 	is_forwardslash = is_there_forwardslash(cmd);
 	path = get_env_value(envp, "$PATH");
 	if (!path && !is_forwardslash)

@@ -3,34 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/11 18:02:27 by bel-kala          #+#    #+#             */
-/*   Updated: 2023/05/12 12:49:31 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/14 12:16:36 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include"../../minishell.h"
-
-int    ft_memcmp(const void *str1, const void *str2, size_t n)
-{
-        size_t                  i;
-        unsigned char   *s1;
-        unsigned char   *s2;
-
-        s1 = (unsigned char *)str1;
-        s2 = (unsigned char *)str2;
-        i = 0;
-        while (i <= n)
-        {
-                if (s1[i] != s2[i])
-                    return(1);
-                i ++;
-        }
-        return (0);
-}
-
 
 char *get_env_value(t_envp *env,char *name)
 {
@@ -70,8 +51,8 @@ int ft_cd_home(t_envp **env,t_cmds *cmd)
     
     if(cmd->args[1] == NULL)
         home = get_env_value(*env,"$HOME");
-    // if(cmd->args[1][0] == '-' && cmd->args[1][1] == '\0')
-    //     home = ft_strdup(get_env_value(*env,"$OLDPWD"));
+    else if(cmd->args[1][0] == '-' && cmd->args[1][1] == '\0')
+        home = ft_strdup(get_env_value(*env,"$OLDPWD"));
     if(chdir(home) == -1)
     {
         ft_putstr_fd("Minishell: cd: HOME not set\n",2);
@@ -91,6 +72,8 @@ int ft_cd(t_cmds *cmd,t_envp **env)
     buf = NULL;
     if(cmd->args[1] == NULL)
         return(ft_cd_home(env,cmd));
+    if(cmd->args[1][0] == '-' && cmd->args[1][1] == '\0')
+        return(ft_cd_home(env,cmd));
     else if(cmd->args[1] != NULL)
     {
         if(chdir(cmd->args[1]) == -1)
@@ -100,8 +83,18 @@ int ft_cd(t_cmds *cmd,t_envp **env)
             ft_putstr_fd(": No such file or directory\n",2);
             return(EXIT_FAILURE);
         }
+        buf = getcwd(buf,10004);
         update_env("$OLDPWD",get_env_value(*env,"$PWD"),*env);
-        update_env("$PWD",getcwd(buf,10004),*env);
+        update_env("$PWD",buf,*env);
+        free(buf);
     }
     return(EXIT_SUCCESS);
 }
+
+// i added (cmd->args[1][0] == '-' && cmd->args[1][1] == '\0') to ft_cd
+// teste env | grep PWD after using cd -
+//it segfault when i run cd only
+//recheck the updated OLDPWD AND PWD IN ALL CASES
+
+
+//pwd + cd utils => double free

@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:51:39 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 14:28:46 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:27:24 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static char	*remove_false_variables(char *value, char *var)
 	return (free(value), free(second_half), first_half);
 }
 
-static char	*rewrite_string(char *value, char *var, t_envp *tmp)
+static char	*rewrite_string(char *value, char *var, char *val)
 {
 	char	*first_half;
 	char	*second_half;
@@ -69,7 +69,7 @@ static char	*rewrite_string(char *value, char *var, t_envp *tmp)
 	if (len == 1 || (var[1] && (var[1] == '|' || var[1] == '<'
 				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
-	expanded = ft_strdup(tmp->envp_value);
+	expanded = ft_strdup(val);
 	pos = find_variable_position(value, var);
 	first_half = ft_strdup("");
 	if (pos != 0)
@@ -95,7 +95,11 @@ void	handle_variables_in_quotes(t_tokens **token, t_envp *envp)
 	{
 		tmp = get_variable(envp, var[i]);
 		if (tmp)
-			(*token)->value = rewrite_string((*token)->value, var[i], tmp);
+			(*token)->value = rewrite_string((*token)->value, var[i],
+					tmp->envp_value);
+		else if (ft_strcmp(var[0], "$?"))
+			(*token)->value = rewrite_string((*token)->value, var[i],
+					ft_itoa(globale.exit_code));
 		else
 			(*token)->value = remove_false_variables((*token)->value, var[i]);
 		free(var[i]);

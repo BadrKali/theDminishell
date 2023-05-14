@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
+/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:45:10 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/11 17:48:45 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:16:31 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,7 @@ void	handle_variable(t_tokens **token, t_envp *envp, char *input, int *end)
 	start = *end;
 	(*end)++;
 	if (input[*end] && input[*end] == '?')
-	{
-		ft_lstadd_back_token(token, ft_lstnew_token(ft_itoa(globale.exit_code), VAR));
-		(*end)++;
-	}
+		handle_exit_variable(token, end);
 	else if (input[*end] && (input[*end] == '\"' || input[*end] == '\''))
 		return ;
 	else if ((input[*end] && (input[*end] == ' ' || input[*end] == '\n'

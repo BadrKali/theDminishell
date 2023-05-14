@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:53:57 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 17:32:53 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:26:55 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,5 @@ void	handle_variables(t_tokens **token, t_envp *envp, t_tokens **head)
 	{
 		free((*token)->value);
 		(*token)->value = ft_strdup("");
-		// if ((*token)->prev && (*token)->prev->type == PIPE)
-		// 	(*token)->prev->is_deleted = 1;
-		// else if ((*token)->prev && (*token)->prev->prev && (*token)->prev->prev->type == PIPE)
-		// 	(*token)->prev->prev->is_deleted = 1;
-		// ft_deletenode(head, *token);
 	}
 }

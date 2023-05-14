@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 15:38:43 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/14 12:09:01 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
-#include <signal.h>
-#include <sys/ioctl.h>
+# include <signal.h>
+# include <sys/ioctl.h>
 
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -27,20 +27,21 @@
 # include<signal.h>
 # include<errno.h>
 # include <dirent.h>
-#define ERR "minishell: syntax error near unexpected token `|'\n"
+# define ERR "minishell: syntax error near unexpected token `|'\n"
+# define ERR_RED "minishell: syntax error near unexpected token `newline'\n"
+# define ERR_QUOTES "minishell: Quotes are not being properly closed!\n"
 
-#define ENV_APPEND 1000
-#define ENV_UPDATE 2000
-#define NEW_ENV 3000
-#define FORK 90
+# define ENV_APPEND 1000
+# define ENV_UPDATE 2000
+# define NEW_ENV 3000
+# define FORK 90
 
 typedef struct s_globale {
-	int exit_code;
+	int	exit_code;
 	int	heredoc;
 	int	heredoc_tmp;
-	int cmd;
-	
-} t_globale ;
+	int	cmd;
+}	t_globale;
 
 typedef struct s_tokens {
 	int				type;
@@ -95,7 +96,7 @@ int			ft_isdigit(int c);
 int			ft_strcmp(char *s1, char *s2);
 char		*ft_itoa(int n);
 void		ft_putstr_fd(char *s, int fd);
-char		*ft_strjoin(char *s1, char *s2);
+//char		*ft_strjoin(char *s1, char *s2);
 void		ft_deletenode(t_tokens **head_ref, t_tokens *del);
 t_tokens	*ft_lstnew_token(char *value, int type);
 t_tokens	*ft_lstlast_token(t_tokens *lst);
@@ -108,14 +109,18 @@ void		ft_lstadd_back_envp(t_envp **lst, t_envp *new);
 t_envp		*ft_lstnew_envp(char *value, char *name);
 void		fill_env_pointer(t_envp **envp, char *env[]);
 int			ft_memcmp(const void *str1, const void *str2, size_t n);
-int 		ft_strchr(const char *str, int c);
+int			ft_strchr(const char *str, int c);
 int			ft_atoi(const char *str);
+void		ft_putnbr_fd(int n, int fd);
+int    		ft_memcmp(const void *str1, const void *str2, size_t n);
+char	*ft_strjoin(char *s1, char *s2);
 
 /******************
 TOKENIZER FUNCTIONS
 ******************/
 
 void		handle_string(t_tokens **token, char *input, int *end);
+void		handle_exit_variable(t_tokens **token, int *end);
 void		handle_variable_two(t_tokens **token, t_envp *envp, char *input,
 				int *end);
 void		handle_variable(t_tokens **token, t_envp *envp, char *input,
@@ -144,8 +149,17 @@ PARSER FUNCTIONS
 ****************/
 
 int			syntax_checker(t_tokens *token);
+void		handle_argument(t_tokens **token, char **args, int *i, int *is_cmd);
+void		get_arguments_two(t_tokens **token, char **args, int *i,
+				int *is_cmd);
 void		command_table(t_tokens *token, t_cmds **cmd, t_envp *envp);
+char		*handle_heredoc_variables(char *input, t_envp *envp);
 int			handle_heredoc(t_tokens **tokens, t_envp *envp, int file_index);
+char		*read_heredoc_input_two(t_tokens **token, t_envp *envp, char *input,
+				char *buffer);
+void		heredoc_signal_handler(int sig);
+void		read_heredoc_input(t_tokens **token, t_envp *envp, int fd);
+void		clear_heredocs_utils(char *buffer, char *input, int fd);
 char		*get_delimiter(t_tokens *token);
 void		change_red_value(t_tokens **token);
 void		change_delimiter_value(t_tokens **token, char *file_name);
@@ -158,7 +172,7 @@ char		*merge_args(t_tokens **token);
 int			get_arguments_len(t_tokens *token);
 int			*handle_redirections_for_cmd(t_tokens **token, t_envp *envp);
 void		skip_redirections(t_tokens **token);
-void	signal_handler(int sig);
+void		signal_handler(int sig);
 
 /*****************
 EXPANDER FUNCTIONS
@@ -190,41 +204,44 @@ void		close_open_fds(t_cmds *cmd);
 void		delete_tmp_files(t_tokens *token);
 void		mini_cleaner(t_tokens **token, t_cmds **cmd, char *input);
 
-t_globale globale;
+t_globale	globale;
 
-int builtins_handler(t_cmds *cmd,t_envp **envp);
-int ft_cd(t_cmds *cmd,t_envp **env);
-int ft_echo(t_cmds *cmd);
-int ft_env(t_envp *env);
-int ft_export(t_cmds *cmd,t_envp **env);
-int ft_unset(t_envp **env,t_cmds *cmd);
-int ft_pwd(t_cmds *cmd,t_envp **env);
-int ft_exit(t_cmds *cmd,t_envp **env);
+int			builtins_handler(t_cmds *cmd, t_envp **envp);
+int			ft_cd(t_cmds *cmd, t_envp **env);
+int			ft_echo(t_cmds *cmd);
+int			ft_env(t_envp *env);
+int			ft_export(t_cmds *cmd, t_envp **env);
+int			ft_unset(t_envp **env, t_cmds *cmd);
+int			ft_pwd(t_cmds *cmd, t_envp **env);
+int			ft_exit(t_cmds *cmd, t_envp **env);
 
+char		*get_env_value(t_envp *env, char *name);
+char		*get_variable_name(char *env);
+void		ft_lstadd_back_envp(t_envp **lst, t_envp *new);
+char		*envp_name(t_envp *env);
+t_envp		*ft_lstnew_envp(char *value, char *name);
+char		*remove_name(char *envp_value);
+char		*envp_name(t_envp *env);
+t_envp		*check_env_exist(char *args, t_envp *env);
+int			builtins_check(char *name);
 
-char *get_env_value(t_envp *env,char *name);
-char	*get_variable_name(char *env);
-void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
-char *envp_name(t_envp *env);
-t_envp	*ft_lstnew_envp(char *value, char *name);
-char	*remove_name(char *envp_value);
-char *envp_name(t_envp *env);
-t_envp *check_env_exist(char *args,t_envp *env);
-int builtins_check(char *name);
+void		exec_cmd(t_cmds **cmd, t_envp **envp);
+void			simple_exec_handler(t_cmds *cmd, t_envp **env);
+void		single_cmd_handler(t_cmds *cmd, t_envp **env);
+void		multi_command_exec(t_cmds *cmd, t_envp **env, int cmd_num);
+void		print_string(char *str);
+int			dup_redirections(t_cmds *cmd);
+int			check_handler(t_cmds *cmd);
 
-void exec_cmd(t_cmds **cmd,t_envp **envp);
-void simple_exec_handler(t_cmds *cmd, t_envp **env);
-void single_cmd_handler(t_cmds *cmd ,t_envp **env);
-void multi_command_exec(t_cmds *cmd,t_envp **env,int cmd_num);
-void print_string(char *str);
-int dup_redirections(t_cmds *cmd);
-int check_handler(t_cmds *cmd);
-
-t_envp *check_env_exist(char *args,t_envp *env);
-int syntax_check(char *str);
-char	*get_str(const char *str, int c);
-int ft_check_type(char *arg,t_envp *env);
-int export_print(t_envp **env);
-void signal_handler_exec(int num);
+t_envp		*check_env_exist(char *args, t_envp *env);
+int			syntax_check(char *str);
+char		*get_str(const char *str, int c);
+int			ft_check_type(char *arg, t_envp *env);
+int			export_print(t_envp **env);
+void		signal_handler_exec(int num);
+char 		**env_joiner(t_envp *env);
+int 		env_len(t_envp *env);
+void 		signal_exec();
+int len_liste(t_cmds *cmd);
 
 #endif

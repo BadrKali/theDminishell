@@ -6,18 +6,27 @@
 /*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/11 18:03:03 by bel-kala          #+#    #+#             */
-/*   Updated: 2023/05/11 18:03:04 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/14 13:56:18 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include"../../minishell.h"
 
+void free_content(t_envp *node)
+{
+    free(node->env_pre);
+    free(node->envp_name);
+    free(node->envp_value);
+    //free(node->flag);
+}
+
 void node_delete(t_envp **env,t_envp *node)
 {
     t_envp *prev;
     t_envp *next;
 
+    free_content(node);
     if(node->next == NULL)
     {
         prev = node->prev;
@@ -58,7 +67,7 @@ int ft_unset(t_envp **env,t_cmds *cmd)
     t_envp *tmp;
 
     i = 1;
-    if(cmd->args[1] == NULL)
+    if(cmd->args[1] == NULL || (cmd->args[1][0] == '_' && cmd->args[1][0] == '\0'))
         return(EXIT_SUCCESS);
     while(cmd->args[i] != NULL)
     {
@@ -80,4 +89,4 @@ int ft_unset(t_envp **env,t_cmds *cmd)
     return(EXIT_SUCCESS);
 }
 
-//need to check the syntax before unset EX : unset shds**99KK 
+// i added this (cmd->args[1][0] == '_' && cmd->args[1][0] == '\0') on ft_unset

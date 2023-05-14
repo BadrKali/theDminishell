@@ -6,25 +6,11 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:43:02 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 15:33:34 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:56:08 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-// void	insertAfter(t_tokens *prevNode, char *arg, int type) {
-//     if (prevNode == NULL)
-// 	{
-// 		printf("Error: previous node cannot be NULL\n");
-//         return ;
-// 	}
-// 	t_tokens *newNode = ft_lstnew_token(arg, type);
-//     newNode->prev = prevNode;
-//     newNode->next = prevNode->next;
-//     if (prevNode->next != NULL)
-//         prevNode->next->prev = newNode;
-//     prevNode->next = newNode;
-// }
 
 void	merge_tokens_two(t_tokens **tmp, t_tokens **tmp2, t_tokens **head)
 {

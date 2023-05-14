@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 12:33:44 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/12 14:10:58 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 12:17:41 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,5 @@ void	handle_variable_two(t_tokens **token, t_envp *envp, char *input,
 			handle_variable_with_space(token, var);
 		else
 			handle_variable_without_space(token, envp, res);
-			
 	}
 }

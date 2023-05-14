@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 15:47:07 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/08 20:40:36 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:56:35 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ int	find_quotes(char *val, int c)
 		i++;
 	if ((val[i] && val[i] != c) || !val[i])
 	{
-		return (ft_putstr_fd("minishell: Quotes are not being properly\
-			closed!\n", 2), 1);
+		return (ft_putstr_fd(ERR_QUOTES, 2), 1);
 	}
 	return (0);
 }

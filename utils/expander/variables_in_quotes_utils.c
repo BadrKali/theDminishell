@@ -6,7 +6,7 @@
 /*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 20:57:21 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/09 14:31:37 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/13 13:03:28 by abahsine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	get_variables_in_quotes(char **envs, char *value, int *i, int *j)
 	int	start;
 
 	start = (*i)++;
-	if (value[*i] && ft_isdigit(value[*i]))
+	if (value[*i] && (ft_isdigit(value[*i]) || value[*i] == '?'))
 		envs[(*j)++] = ft_substr(value, start, ++(*i) - start);
 	else if (value[*i] && !ft_isalpha(value[*i]))
 		(*i)++;
@@ -50,7 +50,7 @@ int	get_envs_in_quotes_len(char *value)
 		if (value[i] == '$')
 		{
 			i++;
-			if (value[i] && ft_isdigit(value[i]))
+			if (value[i] && (ft_isdigit(value[i]) || value[i] == '?'))
 			{
 				count++;
 				i++;
