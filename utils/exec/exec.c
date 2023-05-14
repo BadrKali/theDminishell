@@ -1,17 +1,32 @@
 #include"../../minishell.h"
 
-int len_liste(t_cmds *cmd)
+void multi_command(t_cmds **cmd,t_envp **envp)
 {
-    int len;
+    int cmd_num;
+    int i;
+    int status;
+    t_cmds *tmp;
 
-    len = 0;
-    while(cmd != NULL)
+    tmp = *cmd;
+    i = 0;
+    cmd_num = len_liste(*cmd);
+    multi_command_exec(*cmd,envp,cmd_num);
+    while(i < cmd_num)
     {
-        cmd = cmd->next;
-        len++; 
+        waitpid(tmp->pid,&status,0);
+        i++;
+        tmp = tmp->next;
     }
-    return(len);
+    if(WIFEXITED(status))
+        globale.exit_code = WEXITSTATUS(status);
+    if(WIFSIGNALED(status))
+    {
+        int signum = WTERMSIG(status);
+        globale.exit_code = 130;
+        signal_handler_exec(signum);
+    }
 }
+
 
 void exec_cmd(t_cmds **cmd,t_envp **envp)
 {
@@ -23,7 +38,6 @@ void exec_cmd(t_cmds **cmd,t_envp **envp)
     
     tmp = *cmd;
     i = 0;
-    //signal(SIGINT,SIG_DFL)
     globale.cmd = 1;
     if(tmp->cmd && ft_memcmp("./minishell",tmp->cmd,ft_strlen("./minishell")) == 0)
     {
@@ -38,29 +52,6 @@ void exec_cmd(t_cmds **cmd,t_envp **envp)
             simple_exec_handler(tmp,envp);
     }
     else
-    {
-        cmd_num = len_liste(*cmd);
-        multi_command_exec(*cmd,envp,cmd_num);
-        while(i < cmd_num)
-        {
-            waitpid(tmp->pid,&status,0);
-            i++;
-            tmp = tmp->next;
-        }
-        if(WIFEXITED(status))
-            globale.exit_code = WEXITSTATUS(status);
-        if(WIFSIGNALED(status))
-        {
-            int signum = WTERMSIG(status);
-            globale.exit_code = 130;
-            signal_handler_exec(signum);
-        }
-    }
+        multi_command(cmd,envp);
     globale.cmd = -1;
 }
-
-
-
-
-
-// []->[]->[]->[]->[]

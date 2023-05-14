@@ -1,12 +1,6 @@
 #include"../../minishell.h"
 
 
-void error_msg(int num)
-{
-    if(num == FORK)
-        ft_putstr_fd("FORK FAILED\n",2);
-}
-
 void close_fds(int index,int cmd_num,int ends[][2])
 {
     int i;
@@ -26,10 +20,7 @@ void dup_fds(t_cmds *cmd,int ends[][2],int index,int cmd_num)
 {
     close_fds(index,cmd_num,ends);
     if(cmd->prev == NULL)
-    {
         dup2(ends[index][1],STDOUT_FILENO);
-        //close(ends[index][1]);
-    }
     else if(cmd->next != NULL)
     {
         dup2(ends[index][1],STDOUT_FILENO);
@@ -41,7 +32,6 @@ void dup_fds(t_cmds *cmd,int ends[][2],int index,int cmd_num)
     {
         dup2(ends[index - 1][0],STDIN_FILENO);
         close(ends[index - 1][0]);
-        //close(ends[index - 1][1]); //
     }
         
 }
@@ -60,15 +50,12 @@ void multi_command_exec(t_cmds *cmd,t_envp **env,int cmd_num)
     i = 0;
     while(cmd != NULL)
     {
-        // if(cmd->cmd == NULL && cmd->next)
-        //     cmd = cmd->next;
         cmd->pid = fork();
         if(cmd->pid < 0)
         {
-            error_msg(FORK);
+            ft_putstr_fd("FORK FAILED\n",2);
             return;
-        }
-            
+        }   
         if(cmd->pid == 0)
         {
             dup_fds(cmd,ends,i,cmd_num);
