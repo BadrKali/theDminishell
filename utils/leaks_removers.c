@@ -12,6 +12,16 @@
 
 #include "../minishell.h"
 
+void	free_2d_arrays_int(int **res)
+{
+	int	i;
+
+	i = 0;
+	while (res[i])
+		free(res[i++]);
+	free(res);
+}
+
 void	*free_2d_arrays(char **res)
 {
 	int	i;

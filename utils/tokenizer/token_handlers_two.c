@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers_two.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 12:33:44 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/13 12:17:41 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:55:49 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,17 @@ static void	space_at_variable_beginning(t_tokens **token, t_envp *var)
 		ft_lstadd_back_token(token, ft_lstnew_token(ft_strdup(" "), T_SPACE));
 }
 
-static void	handle_variable_with_space(t_tokens **token, t_envp *var)
+static void	handle_variable_with_space(t_tokens **token, t_envp *var, int flag)
 {
 	char		**args;
 	int			end;
 	int			i;
 
-	args = ft_split(var->envp_value, ' ');
+	args = NULL;
+	if (flag == 1)
+		args = ft_split(var->envp_value, ' ');
+	else if (flag == 2)
+		args = ft_split(var->envp_value, '\t');
 	end = get_args_len(args);
 	end--;
 	i = 0;
@@ -52,7 +56,8 @@ static void	handle_variable_with_space(t_tokens **token, t_envp *var)
 		ft_lstadd_back_token(token, ft_lstnew_token(ft_strdup(" "), T_SPACE));
 	}
 	ft_lstadd_back_token(token, ft_lstnew_token(args[i++], VAR));
-	if (var->envp_value[ft_strlen(var->envp_value) - 2] == ' ')
+	if (var->envp_value[ft_strlen(var->envp_value) - 2] == ' '
+		|| var->envp_value[ft_strlen(var->envp_value) - 2] == '\t')
 		ft_lstadd_back_token(token, ft_lstnew_token(ft_strdup(" "), T_SPACE));
 	free(args);
 }
@@ -64,7 +69,7 @@ static void	handle_variable_without_space(t_tokens **token, t_envp *envp,
 
 	ft_lstadd_back_token(token, ft_lstnew_token(res, VAR));
 	last_token = ft_lstlast_token(*token);
-	handle_variables(&last_token, envp, token);
+	handle_variables(&last_token, envp);
 }
 
 void	handle_variable_two(t_tokens **token, t_envp *envp, char *input,
@@ -86,7 +91,7 @@ void	handle_variable_two(t_tokens **token, t_envp *envp, char *input,
 	{
 		var = get_variable(envp, res);
 		if (var && find_space(var->envp_value))
-			handle_variable_with_space(token, var);
+			handle_variable_with_space(token, var, find_space(var->envp_value));
 		else
 			handle_variable_without_space(token, envp, res);
 	}

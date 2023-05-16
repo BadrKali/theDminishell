@@ -6,7 +6,7 @@
 /*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:15:19 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/14 12:09:01 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/15 12:31:15 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int			ft_isdigit(int c);
 int			ft_strcmp(char *s1, char *s2);
 char		*ft_itoa(int n);
 void		ft_putstr_fd(char *s, int fd);
-//char		*ft_strjoin(char *s1, char *s2);
 void		ft_deletenode(t_tokens **head_ref, t_tokens *del);
 t_tokens	*ft_lstnew_token(char *value, int type);
 t_tokens	*ft_lstlast_token(t_tokens *lst);
@@ -112,8 +111,8 @@ int			ft_memcmp(const void *str1, const void *str2, size_t n);
 int			ft_strchr(const char *str, int c);
 int			ft_atoi(const char *str);
 void		ft_putnbr_fd(int n, int fd);
-int    		ft_memcmp(const void *str1, const void *str2, size_t n);
-char	*ft_strjoin(char *s1, char *s2);
+int			ft_memcmp(const void *str1, const void *str2, size_t n);
+char		*ft_strjoin(char *s1, char *s2);
 
 /******************
 TOKENIZER FUNCTIONS
@@ -155,11 +154,11 @@ void		get_arguments_two(t_tokens **token, char **args, int *i,
 void		command_table(t_tokens *token, t_cmds **cmd, t_envp *envp);
 char		*handle_heredoc_variables(char *input, t_envp *envp);
 int			handle_heredoc(t_tokens **tokens, t_envp *envp, int file_index);
-char		*read_heredoc_input_two(t_tokens **token, t_envp *envp, char *input,
-				char *buffer);
+char		*read_heredoc_input_two(t_tokens **token, t_envp *envp,
+				char *input);
 void		heredoc_signal_handler(int sig);
 void		read_heredoc_input(t_tokens **token, t_envp *envp, int fd);
-void		clear_heredocs_utils(char *buffer, char *input, int fd);
+void		clear_heredocs_utils(char *buffer, int fd);
 char		*get_delimiter(t_tokens *token);
 void		change_red_value(t_tokens **token);
 void		change_delimiter_value(t_tokens **token, char *file_name);
@@ -184,7 +183,7 @@ t_envp		*get_variable(t_envp *envp, char *value);
 int			get_envs_in_quotes_len(char *value);
 int			find_variable_position(char *value, char *var);
 char		**find_variables_in_quotes(char *value);
-void		handle_variables(t_tokens **token, t_envp *envp, t_tokens **head);
+void		handle_variables(t_tokens **token, t_envp *envp);
 t_envp		*get_variable(t_envp *envp, char *value);
 
 /**************
@@ -195,6 +194,7 @@ void		free_linked_list(t_tokens *token);
 void		free_linked_list_cmd(t_cmds *cmd);
 void		*free_2d_arrays(char **res);
 void		delete_two_exec_spaces(t_tokens **token);
+void		free_2d_arrays_int(int **res);
 
 /**************
 OTHER FUNCTIONS
@@ -212,8 +212,8 @@ int			ft_echo(t_cmds *cmd);
 int			ft_env(t_envp *env);
 int			ft_export(t_cmds *cmd, t_envp **env);
 int			ft_unset(t_envp **env, t_cmds *cmd);
-int			ft_pwd(t_cmds *cmd, t_envp **env);
-int			ft_exit(t_cmds *cmd, t_envp **env);
+int			ft_pwd(t_envp **env);
+int			ft_exit(t_cmds *cmd);
 
 char		*get_env_value(t_envp *env, char *name);
 char		*get_variable_name(char *env);
@@ -226,7 +226,7 @@ t_envp		*check_env_exist(char *args, t_envp *env);
 int			builtins_check(char *name);
 
 void		exec_cmd(t_cmds **cmd, t_envp **envp);
-void			simple_exec_handler(t_cmds *cmd, t_envp **env);
+void		simple_exec_handler(t_cmds *cmd, t_envp **env);
 void		single_cmd_handler(t_cmds *cmd, t_envp **env);
 void		multi_command_exec(t_cmds *cmd, t_envp **env, int cmd_num);
 void		print_string(char *str);
@@ -239,9 +239,10 @@ char		*get_str(const char *str, int c);
 int			ft_check_type(char *arg, t_envp *env);
 int			export_print(t_envp **env);
 void		signal_handler_exec(int num);
-char 		**env_joiner(t_envp *env);
-int 		env_len(t_envp *env);
-void 		signal_exec();
-int len_liste(t_cmds *cmd);
+char		**env_joiner(t_envp *env);
+int			env_len(t_envp *env);
+void		signal_exec(void);
+int			len_liste(t_cmds *cmd);
+void		close_fds(int index, int cmd_num, int **ends);
 
 #endif

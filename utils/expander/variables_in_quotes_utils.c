@@ -17,10 +17,8 @@ void	get_variables_in_quotes(char **envs, char *value, int *i, int *j)
 	int	start;
 
 	start = (*i)++;
-	if (value[*i] && (ft_isdigit(value[*i]) || value[*i] == '?'))
+	if (value[*i] && !ft_isalpha(value[*i]))
 		envs[(*j)++] = ft_substr(value, start, ++(*i) - start);
-	else if (value[*i] && !ft_isalpha(value[*i]))
-		(*i)++;
 	else
 	{
 		while (value[*i] && (ft_isalpha(value[*i]) || ft_isdigit(value[*i])
@@ -50,13 +48,11 @@ int	get_envs_in_quotes_len(char *value)
 		if (value[i] == '$')
 		{
 			i++;
-			if (value[i] && (ft_isdigit(value[i]) || value[i] == '?'))
+			if (value[i] && !ft_isalpha(value[i]))
 			{
 				count++;
 				i++;
 			}
-			else if (value[i] && !ft_isalpha(value[i]))
-				i++;
 			else
 				count_and_skip_variable(value, &i, &count);
 		}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_handlers_three.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abahsine <abahsine@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 12:37:04 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/13 12:16:38 by abahsine         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:53:40 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	find_space(char *value)
 	{
 		if (value[i] == ' ')
 			return (1);
+		else if (value[i] == '\t')
+			return (2);
 		i++;
 	}
 	return (0);

@@ -70,6 +70,7 @@ static char	*rewrite_string(char *value, char *var, char *val)
 				|| var[1] == '>' || var[1] == '\'' || var[1] == '\"')))
 		return (value);
 	expanded = ft_strdup(val);
+	free(val);
 	pos = find_variable_position(value, var);
 	first_half = ft_strdup("");
 	if (pos != 0)
@@ -96,8 +97,8 @@ void	handle_variables_in_quotes(t_tokens **token, t_envp *envp)
 		tmp = get_variable(envp, var[i]);
 		if (tmp)
 			(*token)->value = rewrite_string((*token)->value, var[i],
-					tmp->envp_value);
-		else if (ft_strcmp(var[0], "$?"))
+					ft_strdup(tmp->envp_value));
+		else if (ft_strcmp(var[i], "$?"))
 			(*token)->value = rewrite_string((*token)->value, var[i],
 					ft_itoa(globale.exit_code));
 		else

@@ -91,12 +91,7 @@ void	handle_variable(t_tokens **token, t_envp *envp, char *input, int *end)
 			ft_lstnew_token(ft_substr(input, start, (*end) - start),
 				VAR));
 	else if (input[*end] && (input[*end] != '_' && !ft_isalpha(input[*end])))
-	{
-		ft_lstadd_back_token(token,
-			ft_lstnew_token(ft_substr(input, start, ++(*end) - start),
-				VAR));
-		ft_lstadd_back_token(token, ft_lstnew_token(ft_strdup(" "), T_SPACE));
-	}
+		(*end)++;
 	else
 		handle_variable_two(token, envp, input, end);
 }

@@ -6,13 +6,11 @@
 /*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 13:14:08 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/14 13:21:24 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:56:31 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//! Put back flags later
 
 void	signal_handler(int sig)
 {

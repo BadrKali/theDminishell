@@ -6,13 +6,13 @@
 #    By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/04 13:13:34 by abahsine          #+#    #+#              #
-#    Updated: 2023/05/14 14:54:03 by bel-kala         ###   ########.fr        #
+#    Updated: 2023/05/15 12:11:36 by bel-kala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-CFLAGS = -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror
 
 CFILES = minishell.c \
 utils/env_utils.c utils/env_handlers.c \
@@ -53,10 +53,10 @@ OFILES = ${CFILES:.c=.o}
 all: ${NAME}
 
 ${NAME}: ${OFILES} minishell.h
-	${CC} ${CFLAGS} ${OFILES} -o ${NAME} -L/Users/bel-kala/homebrew/opt/readline/lib -lreadline
+	${CC} ${CFLAGS} ${OFILES} -o ${NAME} -L/Users/abahsine/homebrew/opt/readline/lib -lreadline
 
 %.o: %.c
-	${CC} ${CFLAGS} -I/Users/bel-kala/homebrew/opt/readline/include -c $< -o $@
+	${CC} ${CFLAGS} -I/Users/abahsine/homebrew/opt/readline/include -c $< -o $@
 
 clean:
 	rm -f ${OFILES}

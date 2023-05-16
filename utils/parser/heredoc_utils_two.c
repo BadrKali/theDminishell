@@ -6,24 +6,25 @@
 /*   By: bel-kala <bel-kala@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/13 13:17:39 by abahsine          #+#    #+#             */
-/*   Updated: 2023/05/14 15:10:41 by bel-kala         ###   ########.fr       */
+/*   Updated: 2023/05/15 12:12:19 by bel-kala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	clear_heredocs_utils(char *buffer, char *input, int fd)
+void	clear_heredocs_utils(char *buffer, int fd)
 {
 	ft_putstr_fd(buffer, fd);
 	free(buffer);
 	close(fd);
 }
 
-char	*read_heredoc_input_two(t_tokens **token, t_envp *envp, char *input,
-		char *buffer)
+char	*read_heredoc_input_two(t_tokens **token, t_envp *envp, char *input)
 {
 	char	*delimiter;
+	char	*buffer;
 
+	buffer = ft_strdup("");
 	delimiter = get_delimiter(*token);
 	while (1 && globale.heredoc != 1)
 	{
@@ -54,6 +55,6 @@ void	read_heredoc_input(t_tokens **token, t_envp *envp, int fd)
 
 	input = NULL;
 	signal(SIGINT, heredoc_signal_handler);
-	buffer = read_heredoc_input_two(token, envp, input, ft_strdup(""));
-	clear_heredocs_utils(buffer, input, fd);
+	buffer = read_heredoc_input_two(token, envp, input);
+	clear_heredocs_utils(buffer, fd);
 }
