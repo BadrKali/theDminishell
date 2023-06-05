@@ -60,14 +60,3 @@ $ cat file.txt | grep "pattern" | wc -l
     For more information and examples, please refer to the <a href="#">MiniShell documentation</a>.
 </p>
 
-<h2>Contribution</h2>
-
-<p>
-    Contributions to the MiniShell project are welcome! If you have any ideas for improvements or new features, feel free to submit a pull request. Please refer to the <a href="CONTRIBUTING.md">contribution guidelines</a> for detailed instructions.
-</p>
-
-<h2>License</h2>
-
-<p>
-    This project is licensed under the <a href="LICENSE">MIT License</a>. Feel free to use and modify this code for your own purposes.
-</p>
