@@ -5,7 +5,7 @@
 </p>
 
 <p>
-    The 1337 School MiniShell is a lightweight command-line interpreter, inspired by the Bash shell, developed by Your Name and Peer's Name. This project was created as a part of our coursework at 1337 School, where we aimed to implement a minimal version of the Bash shell with basic functionalities.
+    The 1337 School MiniShell is a lightweight command-line interpreter, inspired by the Bash shell, developed by Me and Abahsine. This project was created as a part of our coursework at 1337 School, where we aimed to implement a minimal version of the Bash shell with basic functionalities.
 </p>
 
 <h2>Features</h2>
